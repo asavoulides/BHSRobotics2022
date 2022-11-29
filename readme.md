@@ -27,8 +27,12 @@
 
 **11/29/22**
 Fixed Pusher Bugs
-Worked on Auton. Mode
-Continued working on redoing intake. 
+Worked on Autonomous Mode
+Created 2 files: 
+  Short and Long
+Updated Status on Screen
+Continued working on redoing intake.
+Replaced Axil on Motor 1
 
 **11/28/22**
 Changed intake to Red Gears to increase friction and minimize slack... Gear cannot enter nor exit the intake due to the lack of entry space.
