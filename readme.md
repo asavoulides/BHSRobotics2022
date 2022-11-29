@@ -2,17 +2,17 @@
 ![Controller](https://raw.githubusercontent.com/smcrobotics/competition_bot_15_inch/master/docs/controller.png)
 
 ## Button mappings
-1. L2: // lift down one cube
-1. L1: // lift up one cube
-1. R2: lift move down
-1. R1: lift move up
-1. Left Joystick: Left side drive motors
-1. Right Joystick: Right side drive motors
-1. up: lift pos up
-1. left: N/A
-1. down: lift pos down
-1. right: toggle claw
-1. X: drive brake toggle
-1. A: N/A
-1. B: lift pos tower mid
-1. Y: lift pos tower low
+1) L2: N/A
+2) L1: ShooterGroup: Forwards
+3) R2: Intake: Reverse
+4) R1: Intake: Forwards
+5) Left Joystick: DriveTrain (Left Side)
+6) Right Joystick: Drivetrain (Right Side)
+7) UpArrow: Pusher: Reverse
+8) LeftArrow: Spinner: Forwards 
+9) DownArrow: Pusher: Forwards
+10) RightArrow: Spinner: Reverse
+11) X: ShooterGroup Velocity 75%
+12) A: ShooterGroup Velocity 60%
+13) B: Numatic (Horizontal Expansion)
+14) Y: ShooterGroup Velocity 100%
