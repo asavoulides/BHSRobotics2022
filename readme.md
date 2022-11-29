@@ -34,6 +34,6 @@ Updated Status on Screen
 Continued working on redoing intake.
 Replaced Axil on Motor 1
 
-**11/28/22**
+**11/28/22** 
 Changed intake to Red Gears to increase friction and minimize slack... Gear cannot enter nor exit the intake due to the lack of entry space.
 Added SHooter Velocity Status to Controller
