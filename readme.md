@@ -31,7 +31,7 @@ Worked on Autonomous Mode
 Created 2 files: 
   Short and Long
 Updated Status on Screen
-Continued working on redoing intake.
+Completed shifting axis on Intake
 Replaced Axil on Motor 1
 
 **11/28/22** 
