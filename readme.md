@@ -2,8 +2,8 @@
 ![Controller](https://raw.githubusercontent.com/smcrobotics/competition_bot_15_inch/master/docs/controller.png)
 
 ## Button mappings
-1. L2: // lift down one cube
-1. L1: // lift up one cube
+1. L2: // UNBOUND
+1. L1: // ShooterGroup
 1. R2: lift move down
 1. R1: lift move up
 1. Left Joystick: Left side drive motors
