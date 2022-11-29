@@ -1,7 +1,7 @@
 # Key bindings for MS VEX Robotics RObot
 ![Controller](https://raw.githubusercontent.com/smcrobotics/competition_bot_15_inch/master/docs/controller.png)
 
-## Button mappings
+## Button Mappings
 1) L2: N/A
 2) L1: ShooterGroup: Forwards
 3) R2: Intake: Reverse
@@ -16,3 +16,8 @@
 12) A: ShooterGroup Velocity 60%
 13) B: Numatic (Horizontal Expansion)
 14) Y: ShooterGroup Velocity 100%
+
+## ChangeLog
+
+**11/28/22**
+Changed intake to Red Gears to increase friction and minimize slack... Gear cannot enter nor exit the intake due to the lack of entry space.
