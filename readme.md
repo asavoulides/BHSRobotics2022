@@ -1,4 +1,4 @@
-# Key bindings for MS VEX Robotics RObot
+# Key bindings for MS VEX Robotics Robot
 ![Controller](https://raw.githubusercontent.com/smcrobotics/competition_bot_15_inch/master/docs/controller.png)
 
 ## Button Mappings
