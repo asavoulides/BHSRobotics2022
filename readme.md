@@ -24,6 +24,9 @@
 **12/1/22**
 
 **11/30/22**
+Worked on Autonomous Mode (long)
+Completed testing for moving axis on intake.
+Created haptics and additional status info utilizing a GUI.
 
 **11/29/22**
 Fixed Pusher Bugs
