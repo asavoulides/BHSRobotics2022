@@ -22,6 +22,9 @@
 **12/2/22**
 
 **12/1/22**
+Continued working on Autonomous Mode (long)
+Developed Timer along with automatic deployment of Horizontal Expansion if driver forgets to activate Numatic's at 3'.
+Added rails at the top of intake to allow for more guideness when disks travel up.
 
 **11/30/22**
 Worked on Autonomous Mode (long)
