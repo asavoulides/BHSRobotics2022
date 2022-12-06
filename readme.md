@@ -19,6 +19,13 @@
 
 ## ChangeLog
 
+**12/5/22**
+Developed Auton. Skills
+Strengthend Spinner Axil
+All motor temperatures are display'ed on brain.
+Helped upper school recover after their wonderful tournament (both morally and with genuine engineering)
+
+
 **12/4/22**
 Added Battery Temperature status to controller along with warnings utilizing Lists: append/remove
 Begun thinking of ways to utilize 2 distance sensors along with a color sensor in order to detect where net is.
