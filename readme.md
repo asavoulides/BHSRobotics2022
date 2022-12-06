@@ -12,12 +12,19 @@
 8) LeftArrow: Spinner: Forwards 
 9) DownArrow: Pusher: Forwards
 10) RightArrow: Spinner: Reverse
-11) X: ShooterGroup Velocity 75%
-12) A: ShooterGroup Velocity 60%
+11) X: ShooterGroup Velocity +10%
+12) A: ShooterGroup Velocity -10%
 13) B: Numatic (Horizontal Expansion)
-14) Y: ShooterGroup Velocity 100%
+14) Y: ShooterGroup Velocity +5%
 
 ## ChangeLog
+
+**12/5/22**
+Developed Auton. Skills
+Strengthend Spinner Axil
+All motor temperatures are display'ed on brain.
+Helped upper school recover after their wonderful tournament (both morally and with genuine engineering)
+
 
 **12/4/22**
 Added Battery Temperature status to controller along with warnings utilizing Lists: append/remove
