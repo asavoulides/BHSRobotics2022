@@ -19,6 +19,13 @@
 
 ## ChangeLog
 
+**Winter Break 2022**
+Continued developing long autonomous utilizing sensors.
+Developed short autonomous, again utilizing new sensors.
+Added comments to nearly every single line of code to ensure no one is confused.
+
+
+
 **12/5/22**
 Developed Auton. Skills
 Strengthend Spinner Axil
