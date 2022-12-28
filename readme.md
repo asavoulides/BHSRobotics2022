@@ -23,7 +23,7 @@
 Continued developing long autonomous utilizing sensors.
 Developed short autonomous, again utilizing new sensors.
 Added comments to nearly every single line of code to ensure no one is confused.
-
+Switched to VSCODE IDE in order to utilize a .python5
 
 
 **12/5/22**
