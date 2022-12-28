@@ -73,6 +73,6 @@ We will be utilizing a VScode VEX extension that will allow us to transfer from 
 **Please Refer to the Following Steps**
 **Ensure [VSCode](https://code.visualstudio.com/) is installed locally.**
 **Ensure you are on atleast Python Version 3.10.** To check: MAC: Open Terminal, Type "python --version" OR "python3 --version" Windows: Open CMD and type "python --version"
-**Install the [VexCode Extension](https://www.vexrobotics.com/vexcode/vscode-extension?___store=vexroboticseu&___from_store=vexrobotics#:~:text=The%20VEX%20VS%20Code%20extension,that%20they%20may%20find%20useful.):**
-**Import the Project**
+**Install the [VexCode Extension](https://www.vexrobotics.com/vexcode/vscode-extension?___store=vexroboticseu&___from_store=vexrobotics#:~:text=The%20VEX%20VS%20Code%20extension,that%20they%20may%20find%20useful.):** Refer to the website for more info.
+**Import the Project Using the Extension on VSCode (ON SideBar)**
 
