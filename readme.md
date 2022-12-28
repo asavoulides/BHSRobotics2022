@@ -68,7 +68,7 @@ Completed moving axis for Intake
 Changed intake to Red Gears to increase friction and minimize slack... Gear cannot enter nor exit the intake due to the lack of entry space.
 Added SHooter Velocity Status to Controller
 
-#IDE:
+## IDE:
 We will be utilizing a VScode VEX extension that will allow us to transfer from the incredibly bliding and traumatizing IDE of Vex (which refuses to add a dark theme) and switching to Visual Studio Code. This transfer will also allow us to work with .py files as opposed to .python5 files:
 **Please Refer to the Following Steps**
 **Ensure [VSCode](https://code.visualstudio.com/) is installed locally.**
