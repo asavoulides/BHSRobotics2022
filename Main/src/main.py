@@ -6,26 +6,42 @@ import math
 brain=Brain()
 
 # Robot configuration code
+#---ShooterGroup---
 ShooterGroup_motor_a = Motor(Ports.PORT6, GearSetting.RATIO_36_1, True)
 ShooterGroup_motor_b = Motor(Ports.PORT7, GearSetting.RATIO_36_1, True)
+#Grouped
 ShooterGroup = MotorGroup(ShooterGroup_motor_a, ShooterGroup_motor_b)
+#---Intake---
 Intake = Motor(Ports.PORT8, GearSetting.RATIO_18_1, True)
+#---Expansion---
 expansion = DigitalOut(brain.three_wire_port.h)
+#---Controller---
 controller_1 = Controller(PRIMARY)
+#---Spinner---
 spinner = Motor(Ports.PORT2, GearSetting.RATIO_36_1, False)
+#---Pusher---
 pusher = DigitalOut(brain.three_wire_port.g)
+#---Contact/Distance Sensors---
 rear_distance = Distance(Ports.PORT20)
-left_motor_a = Motor(Ports.PORT10, GearSetting.RATIO_18_1, False)
-left_motor_b = Motor(Ports.PORT11, GearSetting.RATIO_18_1, False)
-left_drive_smart = MotorGroup(left_motor_a, left_motor_b)
-right_motor_a = Motor(Ports.PORT12, GearSetting.RATIO_18_1, True)
-right_motor_b = Motor(Ports.PORT13, GearSetting.RATIO_18_1, True)
-right_drive_smart = MotorGroup(right_motor_a, right_motor_b)
-drivetrain_inertial = Inertial(Ports.PORT1)
-drivetrain = SmartDrive(left_drive_smart, right_drive_smart, drivetrain_inertial, 319.19, 320, 40, MM, 1)
 right_distance = Sonar(brain.three_wire_port.e)
 left_distance = Sonar(brain.three_wire_port.c)
 spinner_switch = Limit(brain.three_wire_port.b)
+#---Drivetrain---
+#Left
+left_motor_a = Motor(Ports.PORT10, GearSetting.RATIO_18_1, False)
+left_motor_b = Motor(Ports.PORT11, GearSetting.RATIO_18_1, False)
+#Left Group
+left_drive_smart = MotorGroup(left_motor_a, left_motor_b)
+#Right
+right_motor_a = Motor(Ports.PORT12, GearSetting.RATIO_18_1, True)
+right_motor_b = Motor(Ports.PORT13, GearSetting.RATIO_18_1, True)
+#Right Group
+right_drive_smart = MotorGroup(right_motor_a, right_motor_b)
+#Drivetrain Inertial (Gyro)
+drivetrain_inertial = Inertial(Ports.PORT1)
+#Combination
+drivetrain = SmartDrive(left_drive_smart, right_drive_smart, drivetrain_inertial, 319.19, 320, 40, MM, 1)
+
 
 
 # wait for rotation sensor to fully initialize
