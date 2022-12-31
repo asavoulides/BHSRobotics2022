@@ -2,7 +2,7 @@
 ![Controller](https://raw.githubusercontent.com/smcrobotics/competition_bot_15_inch/master/docs/controller.png)
 
 ## Button Mappings
-1) L2: N/A
+1) L2: N/A (Reserved for Debugging/Activation of Autonomous Modes for Testing Purposes)
 2) L1: ShooterGroup: Forwards
 3) R2: Intake: Reverse
 4) R1: Intake: Forwards
