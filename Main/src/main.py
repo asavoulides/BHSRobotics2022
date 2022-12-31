@@ -60,13 +60,9 @@ def calibrate_drivetrain():
         sleep(25, MSEC)
     brain.screen.clear_screen()
     brain.screen.set_cursor(1, 1)
-#endregion VEXcode Generated Robot Configuration
-#SHORT CODE
-# ------------------------------------------
-# 	Project: Middle School Robotics
-#	Author: Ryan Chan-Wu, Alex Savoulides
-#	Created: 11/19/22 (after the tragedy of the pdf)
-# ------------------------------------------
+
+
+#--------------------Functions Begin----------------
 
 #Velocity Function
 def cprint(row,text):
@@ -272,6 +268,7 @@ def user_control():
         ShooterGroup.set_velocity(int(s_velocity), PERCENT)
         #Setting Buttons
         if controller_1.buttonL1.pressing():
+            #Displaying the ShooterGroup Velocity on Screen.
             cprint(2, 'Shooter: '+ str(round(((((ShooterGroup_motor_a.velocity(PERCENT)\
                 *ShooterGroup_motor_b.velocity(PERCENT))/2)/s_velocity)*100))) +'%')
             ShooterGroup.spin(FORWARD)
