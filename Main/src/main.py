@@ -263,7 +263,8 @@ def user_control():
         #Print Distance Sensor (For Debbuging)
         bprint(9,f'RearDistance: {rear_distance.object_distance(MM)} mm')
         bprint(10,f'LeftDistance: {left_distance.distance(MM)} mm')
-        bprint(11,f'RightDistance: {right_distance.distance(MM)} mm' )        #Update ShooterGroup Velocity
+        bprint(11,f'RightDistance: {right_distance.distance(MM)} mm' )        
+        #Updating ShooterGroup VElocity
         ShooterGroup.set_velocity(int(s_velocity), PERCENT)
         #Defining Variables
         relativeshooterveloc = round(((((ShooterGroup_motor_a.velocity(PERCENT)\
