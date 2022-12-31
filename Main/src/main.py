@@ -63,18 +63,19 @@ def calibrate_drivetrain():
 
 
 #--------------------Functions Begin----------------
-
-#Velocity Function
+#Function to print on screen mainly to clear clutter
 def cprint(row,text):
     controller_1.screen.clear_row(row)
     controller_1.screen.set_cursor(row, 1)
     controller_1.screen.print(str(text))
 
+#Function to print on brain mainly to clear clutter
 def bprint(row,text):
     brain.screen.clear_row(row)
     brain.screen.set_cursor(row, 1)
     brain.screen.print(str(text))
 
+#ShooterGroup Shooting Function
 def shooter(percent):
     ShooterGroup.set_velocity(percent,PERCENT)
     ShooterGroup.spin(FORWARD)
@@ -82,6 +83,8 @@ def shooter(percent):
     pusher.set(True)
     wait(1,SECONDS)
     pusher.set(False)
+
+#Drivetrain Velocity Function
 def driveveloc(percent):
     left_motor_a.set_velocity(percent,PERCENT)
     left_motor_b.set_velocity(percent,PERCENT)
