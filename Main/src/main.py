@@ -58,7 +58,6 @@ def calibrate_drivetrain():
     while drivetrain_inertial.is_calibrating():
         sleep(25, MSEC)
     brain.screen.clear_row(13)
-    brain.screen.set_cursor(1, 1)
 
 
 #--------------------Functions Begin----------------
@@ -113,7 +112,7 @@ def autonomous_long():
         #30 MSEC wait to prevent distorientation on cprint function
         wait(30, MSEC)
         #consistently updating controller screen for debugging purposes
-        cprint(1, "Dist. Rem.: "+ str(700-rear_distance.object_distance(MM))+'mm')
+        cprint(1, f"Dist. Rem.: {700-rear_distance.object_distance(MM)} mm")
         #finally - we do what the function is intended to - reverse
         drivetrain.drive(REVERSE)
     #updating status on screen.
@@ -142,7 +141,7 @@ def autonomous_long():
     #using magic invented by Muhammad ibn Mūsā al-Khwārizmī in 9th century AD
     shoot_angle = math.atan(1175-int(rear_distance.object_distance(MM)))/(right_distance.distance(MM))
     #updating status on screen to display that the angle has indeed been calculated
-    cprint(1,'Angle Calculated: '+str(shoot_angle)+'%')
+    cprint(1,f'Angle Calculated: {shoot_angle}%')
     #turning to the angle previously calculated
     drivetrain.turn_for(RIGHT,int(shoot_angle),DEGREES)
     #we shall create a statement that calcualted velocity based off of how much 
@@ -245,34 +244,34 @@ def user_control():
     #setting shooter velocity variable to 75%
     s_velocity = 75
     #updating the shooter velocity after autonomous mode
-    cprint(1, 'Shooter: Veloc: '+str(s_velocity)+'%')
+    cprint(1, f'Shooter: Veloc: {s_velocity}%')
     # place driver control in this while loop
     while True:
         #Print Motor Temperature Status
         #ShooterGroup
-        bprint(1,'ShooterA Temp: '+str(ShooterGroup_motor_a.temperature(PERCENT))+ '%')
-        bprint(2,'ShooterB Temp: '+str(ShooterGroup_motor_b.temperature(PERCENT))+'%')
+        bprint(1,f'ShooterA Temp: {ShooterGroup_motor_a.temperature(PERCENT)}%')
+        bprint(2,f'ShooterB Temp: {ShooterGroup_motor_b.temperature(PERCENT)}%')
         #Intake
-        bprint(3,'Intake Temp: '+str(Intake.temperature(PERCENT))+'%')
+        bprint(3,f'Intake Temp: {Intake.temperature(PERCENT)}%')
         #Drivetrain
-        bprint(4,'DrivetrainL1 Temp: '+str(left_motor_a.temperature(PERCENT))+'%')
-        bprint(5,'DrivetrainL2 Temp: '+str(left_motor_b.temperature(PERCENT))+'%')
-        bprint(6,'DrivetrainR1 Temp: '+str(right_motor_a.temperature(PERCENT))+'%')
-        bprint(7,'DrivetrainR2 Temp: '+str(right_motor_b.temperature(PERCENT))+'%')
+        bprint(4,f'DrivetrainL1 Temp: {left_motor_a.temperature(PERCENT)}%') 
+        bprint(5,f'DrivetrainL2 Temp: {left_motor_b.temperature(PERCENT)}%') 
+        bprint(6,f'DrivetrainR1 Temp: {right_motor_a.temperature(PERCENT)}%')
+        bprint(7,f'DrivetrainR2 Temp: {right_motor_b.temperature(PERCENT)}%') 
         #Spinner
-        bprint(8,'Spinner Temp: '+str(spinner.temperature(PERCENT))+'%')
-        bprint(9,'Spinner Temp: '+str(spinner.temperature(PERCENT))+'%')
+        bprint(8,f'Spinner Temp: {spinner.temperature(PERCENT)}%')
         #Print Distance Sensor (For Debbuging)
-        bprint(10, 'RearDistance: '+ str(rear_distance.object_distance(MM))+'mm')
-        bprint(11, 'LeftDistance: '+ str(left_distance.distance(MM))+'mm')
-        bprint(12, 'RightDistance: '+ str(right_distance.distance(MM))+'mm')
-        #Update ShooterGroup Velocity
+        bprint(9,f'RearDistance: {rear_distance.object_distance(MM)} mm')
+        bprint(10,f'LeftDistance: {left_distance.distance(MM)} mm')
+        bprint(11,f'RightDistance: {right_distance.distance(MM)} mm' )        #Update ShooterGroup Velocity
         ShooterGroup.set_velocity(int(s_velocity), PERCENT)
+        #Defining Variables
+        relativeshooterveloc = round(((((ShooterGroup_motor_a.velocity(PERCENT)\
+                *ShooterGroup_motor_b.velocity(PERCENT))/2)/s_velocity)*100))
         #Setting Buttons
         if controller_1.buttonL1.pressing():
             #Displaying the ShooterGroup Velocity on Screen.
-            cprint(2, 'Shooter: '+ str(round(((((ShooterGroup_motor_a.velocity(PERCENT)\
-                *ShooterGroup_motor_b.velocity(PERCENT))/2)/s_velocity)*100))) +'%')
+            cprint(2, f'Shooter: {relativeshoooterveloc}%')
             ShooterGroup.spin(FORWARD)
         else:
             controller_1.screen.clear_row(2)
@@ -281,19 +280,19 @@ def user_control():
         if controller_1.buttonA.pressing() and (int(s_velocity) >= 70):
             s_velocity -= 10
             #update status with text/vibration
-            cprint(1, 'Shooter: Veloc: '+str(s_velocity)+'%')
+            cprint(1, f'Shooter: Veloc: {s_velocity} %')
             controller_1.rumble(".")
             #ShooterGroup: +5
         if controller_1.buttonX.pressing() and (int(s_velocity) <= 95):
             s_velocity += 5
             #update status with text/vibration
-            cprint(1, 'Shooter: Veloc: '+str(s_velocity)+'%')
+            cprint(1, f'Shooter: Veloc: {s_velocity} %')
             controller_1.rumble(".")
             #ShooterGroup + 10
         if controller_1.buttonY.pressing() and (int(s_velocity) <= 90):
             s_velocity += 10
             #update status with text/vibration
-            cprint(1, 'Shooter: Veloc: '+str(s_velocity)+'%')
+            cprint(1, f'Shooter: Veloc: {s_velocity} %')
             controller_1.rumble(".")
         if controller_1.buttonR1.pressing():
             Intake.set_velocity(100, PERCENT)
