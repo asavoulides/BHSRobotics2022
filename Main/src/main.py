@@ -3,7 +3,6 @@
 from vex import *
 #Used Tan-Cos-Etc
 import math
-
 # Brain should be defined by default
 brain=Brain()
 
@@ -49,16 +48,16 @@ drivetrain = SmartDrive(left_drive_smart, right_drive_smart, drivetrain_inertial
 # wait for rotation sensor to fully initialize
 wait(30, MSEC)
 
+#Calibrating Drivetrain 
 def calibrate_drivetrain():
     # Calibrate the Drivetrain Inertial
     sleep(200, MSEC)
-    brain.screen.print("Calibrating")
-    brain.screen.next_row()
-    brain.screen.print("Inertial")
+    bprint(13,"Calibrating")
+    bprint(13,"Inertial")
     drivetrain_inertial.calibrate()
     while drivetrain_inertial.is_calibrating():
         sleep(25, MSEC)
-    brain.screen.clear_screen()
+    brain.screen.clear_row(13)
     brain.screen.set_cursor(1, 1)
 
 
