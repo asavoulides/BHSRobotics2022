@@ -47,6 +47,23 @@ drivetrain = SmartDrive(left_drive_smart, right_drive_smart, drivetrain_inertial
 
 # wait for rotation sensor to fully initialize
 wait(30, MSEC)
+#Defining ShooterGroup Reference:
+#Using Inches to calculate the ShooterGroup Velocity
+velocity = {
+    0: "x", #ex. 0 is 0 Inches, and "x" should be replaced with the shooter velocity requiried to score. X should obviously not be a string and instead be updated to a integer.
+    1: "x",
+    2: "x",
+    3: "x",
+    4: "x",
+    5: "x",
+    6: "x",
+    7: "x",
+    8: "x",
+    9: "x",
+    10: "x"
+}
+
+
 
 #Calibrating Drivetrain 
 def calibrate_drivetrain():
@@ -145,7 +162,8 @@ def autonomous_long():
     #turning to the angle previously calculated
     drivetrain.turn_for(RIGHT,int(shoot_angle),DEGREES)
     #we shall create a statement that calcualted velocity based off of how much 
-    # we calculate each percent changed the mm distance by.
+    final_veloc = velocity[int(net_dist)]
+    ShooterGroup.set_velocity(final_veloc, PERCENT)
  
       
     
