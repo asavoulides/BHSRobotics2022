@@ -1,7 +1,7 @@
 #region VEXcode Generated Robot Configuration
 #Importing Vex
 from vex import *
-#Used mainly for trig calculations.
+#Used Tan-Cos-Etc
 import math
 # Brain should be defined by default
 brain=Brain()
@@ -43,14 +43,14 @@ drivetrain_inertial = Inertial(Ports.PORT1)
 #Combination
 drivetrain = SmartDrive(left_drive_smart, right_drive_smart, drivetrain_inertial, 319.19, 320, 40, MM, 1)
 
-#---Motor Definition's Ended---
+
 
 # wait for rotation sensor to fully initialize
 wait(30, MSEC)
 #Defining ShooterGroup Reference:
 #Using Inches to calculate the ShooterGroup Velocity
 velocity = {
-    0: "x", #ex. 0 represents 0 Inches, and "x" should be replaced with the shooter velocity requiried to score. X should obviously not be a string and instead be updated to a integer.
+    0: "x", #ex. 0 is 0 Inches, and "x" should be replaced with the shooter velocity requiried to score. X should obviously not be a string and instead be updated to a integer.
     1: "x",
     2: "x",
     3: "x",
@@ -65,7 +65,7 @@ velocity = {
 
 
 
-#---Pre Defined (Don't modify)---
+#Calibrating Drivetrain 
 def calibrate_drivetrain():
     # Calibrate the Drivetrain Inertial
     sleep(200, MSEC)
@@ -77,7 +77,7 @@ def calibrate_drivetrain():
     brain.screen.clear_row(13)
 
 
-#--------------------Functions Begin#--------------------
+#--------------------Functions Begin----------------
 #Function to print on screen mainly to clear clutter
 def cprint(row,text):
     controller_1.screen.clear_row(row)
