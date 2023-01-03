@@ -1,4 +1,3 @@
-#region VEXcode Generated Robot Configuration
 #Importing Vex
 from vex import *
 #Used Tan-Cos-Etc
