@@ -43,7 +43,6 @@ drivetrain_inertial = Inertial(Ports.PORT1)
 drivetrain = SmartDrive(left_drive_smart, right_drive_smart, drivetrain_inertial, 319.19, 320, 40, MM, 1)
 
 
-
 # wait for rotation sensor to fully initialize
 wait(30, MSEC)
 #Defining ShooterGroup Reference:
