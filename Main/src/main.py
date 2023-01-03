@@ -289,7 +289,7 @@ def user_control():
         #Setting Buttons
         if controller_1.buttonL1.pressing():
             #Displaying the ShooterGroup Velocity on Screen.
-            cprint(2, f'Shooter: {relativeshoooterveloc}%')
+            cprint(2, f'Shooter: {relativeshooterveloc}%')
             ShooterGroup.spin(FORWARD)
         else:
             controller_1.screen.clear_row(2)
