@@ -5,13 +5,16 @@ from vex import *
 brain=Brain()
 
 # Robot configuration code
-#ShooterGroup
+#---ShooterGroup---
 ShooterGroup_motor_a = Motor(Ports.PORT6, GearSetting.RATIO_36_1, True)
 ShooterGroup_motor_b = Motor(Ports.PORT7, GearSetting.RATIO_36_1, True)
-
+#ShooterGroup GROUP Defining
 ShooterGroup = MotorGroup(ShooterGroup_motor_a, ShooterGroup_motor_b)
+#---Intake---
 Intake = Motor(Ports.PORT8, GearSetting.RATIO_18_1, True)
+#---Expansion (Numatic)--- 
 expansion = DigitalOut(brain.three_wire_port.h)
+#---Controller---
 controller_1 = Controller(PRIMARY)
 spinner = Motor(Ports.PORT2, GearSetting.RATIO_36_1, False)
 pusher = DigitalOut(brain.three_wire_port.g)
@@ -26,11 +29,6 @@ drivetrain_inertial = Inertial(Ports.PORT1)
 drivetrain = SmartDrive(left_drive_smart, right_drive_smart, drivetrain_inertial, 319.19, 320, 40, MM, 1)
 right_distance = Sonar(brain.three_wire_port.e)
 left_distance = Sonar(brain.three_wire_port.c)
-# vex-vision-config:begin
-front_vision__SIG_1 = Signature(1, -4059, -2931, -3495,13509, 15559, 14534,2.5, 0)
-front_vision = Vision(Ports.PORT10, 50, front_vision__SIG_1)
-# vex-vision-config:end
-
 
 # wait for rotation sensor to fully initialize
 wait(30, MSEC)
@@ -191,10 +189,7 @@ def pid(expected):
             break
         
     drivetrain.stop()
-    left_motor_a.set_velocity(70,PERCENT)
-    left_motor_b.set_velocity(70,PERCENT)
-    right_motor_a.set_velocity(70,PERCENT)
-    right_motor_b.set_velocity(70,PERCENT)
+    dveloc(70)
     wait(2,SECONDS)
     cprint(2,'PID Terminated')
     dveloc(100)
