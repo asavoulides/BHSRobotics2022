@@ -151,6 +151,14 @@ def disk_launch(percent, times):
     ShooterGroup.stop()
     Intake.stop()
 
+#Update Driver Velocity
+def dveloc(percent):
+    left_motor_a.set_velocity(percent, PERCENT)
+    left_motor_b.set_velocity(percent, PERCENT)
+    right_motor_a.set_velocity(percent, PERCENT)
+    right_motor_b.set_velocity(percent, PERCENT)
+
+
 #----------------PID----------------
 
 def pid(expected):
@@ -189,8 +197,7 @@ def pid(expected):
     right_motor_b.set_velocity(70,PERCENT)
     wait(2,SECONDS)
     cprint(2,'PID Terminated')
-    drivetrain.set_turn_velocity(100,PERCENT)
-    drivetrain.set_drive_velocity(60,PERCENT)
+    dveloc(100)
 
 #----------------END OF PID----------------
 
@@ -222,13 +229,10 @@ def autonomous_short():
 #---------------------Autonomous Long --------------------
 def autonomous_long():
     calibrate_drivetrain()
-    drivetrain.set_drive_velocity(60,PERCENT)
-#Updating status on screen utilizing cprint function
+    dveloc(70)
+    #Updating status on screen utilizing cprint function
     cprint(1, "Auton. ON (LONG)")
-#Defining Variables
-    shooter_veloc = 0
-#Setting Velocities
-#Autonomous Program
+    #Autonomous Program
     #While loop to reverse until distance sensor is roughly 700
     while rear_distance.object_distance(MM) > 830:
         drivetrain.drive(REVERSE)
@@ -258,8 +262,7 @@ def autonomous_skills():
     calibrate_drivetrain()
     #Updating Velocities
     drivetrain.set_stopping(COAST)
-    drivetrain.set_drive_velocity(70,PERCENT)
-    drivetrain.set_turn_velocity(100,PERCENT)
+    dveloc(80)
     #Reversing into Spinner #1
     while rear_distance.object_distance(MM) > 70: 
         drivetrain.drive(REVERSE)
@@ -326,7 +329,7 @@ def user_control():
     #updating the shooter velocity after autonomous mode
     cprint(1, 'Shooter: Veloc: '+str(s_velocity)+'%')
     #Log Starting Time for Timer
-    drivetrain.set_drive_velocity(100,PERCENT)
+    dveloc(100)
     while True: 
         #----Print Motor Temperature Status---
         #ShooterGroup
@@ -351,7 +354,7 @@ def user_control():
         #Setting Buttons
         if controller_1.buttonL1.pressing():
             #Displaying the ShooterGroup Velocity on Screen
-            cprint(2, 'Shooter: '+str(round((ShooterGroup.velocity(PERCENT)/s_velocity*100)))+'%')
+            cprint(2, 'Shooter: '+str(round((((ShooterGroup_motor_a.velocity(PERCENT)*ShooterGroup_motor_b.velocity(PERCENT))/2)/s_velocity*100)))+'%')
             ShooterGroup.spin(FORWARD)
         else:
             controller_1.screen.clear_row(2)
