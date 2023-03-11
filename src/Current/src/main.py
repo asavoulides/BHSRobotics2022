@@ -1,4 +1,3 @@
-#region VEXcode Generated Robot Configuration
 from vex import *
 import urandom
 
@@ -24,28 +23,25 @@ drivetrain_inertial = Inertial(Ports.PORT5)
 drivetrain = SmartDrive(left_drive_smart, right_drive_smart, drivetrain_inertial, 319.19, 320, 40, MM, 1)
 controller_1 = Controller(PRIMARY)
 spinner = Motor(Ports.PORT6, GearSetting.RATIO_18_1, False)
-
-
+#Phnumatics
+pusher = DigitalOut(brain.three_wire_port.a)
+expansion = DigitalOut(brain.three_wire_port.b)
 # wait for rotation sensor to fully initialize
 wait(30, MSEC)
 
 def calibrate_drivetrain():
     # Calibrate the Drivetrain Inertial
     sleep(200, MSEC)
-    brain.screen.print("Calibrating")
-    brain.screen.next_row()
-    brain.screen.print("Inertial")
     drivetrain_inertial.calibrate()
     while drivetrain_inertial.is_calibrating():
         sleep(25, MSEC)
-    brain.screen.clear_screen()
-    brain.screen.set_cursor(1, 1)
 
 
 
 # define variables used for controlling motors based on controller inputs
 drivetrain_l_needs_to_be_stopped_controller_1 = False
 drivetrain_r_needs_to_be_stopped_controller_1 = False
+
 
 # define a task that will handle monitoring inputs from controller_1
 def rc_auto_loop_function_controller_1():
@@ -107,7 +103,6 @@ def rc_auto_loop_function_controller_1():
 remote_control_code_enabled = True
 
 rc_auto_loop_thread_controller_1 = Thread(rc_auto_loop_function_controller_1)
-#endregion VEXcode Generated Robot Configuration
 
 # ------------------------------------------
 # 
@@ -122,6 +117,7 @@ rc_auto_loop_thread_controller_1 = Thread(rc_auto_loop_function_controller_1)
 from vex import *
 
 # Begin project code
+       
 
 def cprint(row,text):
     controller_1.screen.clear_row(row)
@@ -153,7 +149,7 @@ def disk_launch(percent, times):
     intake.stop()
 
 def preAutonomous():
-    pass
+    calibrate_drivetrain()
 
 def autonomous_short():
     pass
@@ -207,16 +203,11 @@ def driverControl():
     while True:
         pass
 
-
 def userFeedback():
     while True:
         pass
 
-
-
 my_thread1 = Thread(driverControl)
-
-        
 
 comp = Competition(driverControl, autonomous_short)
 preAutonomous()
