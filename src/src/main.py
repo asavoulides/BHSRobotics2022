@@ -21,7 +21,7 @@ right_drive_smart = MotorGroup(right_motor_a, right_motor_b,right_motor_c)
 drivetrain_inertial = Inertial(Ports.PORT5)
 #Drivetrain Declaration
 drivetrain = SmartDrive(left_drive_smart, right_drive_smart, drivetrain_inertial, 319.19, 320, 40, MM, 1)
-controllerA = Controller(PRIMARY)
+controller_1 = Controller(PRIMARY)
 spinner = Motor(Ports.PORT6, GearSetting.RATIO_18_1, False)
 intake = spinner
 shooter = Motor(Ports.PORT7, GearSetting.RATIO_18_1, False)
@@ -251,11 +251,6 @@ def driverControl():
             Intake.spin(REVERSE)
         else:
             Intake.set_velocity(0, PERCENT)
-        if controller_1.buttonB.pressing():
-            expansion.set(True)
-            rumble("-")
-            wait(5,SECONDS)
-            expansion.set(False)
         if controller_1.buttonDown.pressing():
             pusher.set(False)
             controller_1.rumble(".")
@@ -282,6 +277,16 @@ def userFeedback():
     cprint(1, 'Shooter: Veloc: '+str(s_velocity)+'%')
     #Drive Velocity
     while True:
+        #Time Calculations:
+        time_left = 105 - round(brain.timer.time(SECONDS))
+        if time_left > 0:
+            f_time = (105 - round(brain.timer.time(SECONDS)))
+        else:
+            f_time = round(brain.timer.time(SECONDS))
+        if f_time < 10 and f_time > 0: 
+            rumble("---") #Calls rumble function which vibrates said 
+            cprint(2,"Press B")
+
         bprint(1,"LeftA Temperature: ", str(left_motor_a.temperature(PERCENT)),"%")
         bprint(2,"LeftB Temperature: ", str(left_motor_b.temperature(PERCENT)),"%")
         bprint(3,"LeftC Temperature: ", str(left_motor_c.temperature(PERCENT)),"%")
@@ -293,27 +298,23 @@ def userFeedback():
         bprint(9, 'RearDistance:' + str(rear_distance.object_distance(MM))+ 'mm')
         bprint(10, 'LeftDistance: ' +str(left_distance.distance(MM))+'mm')
         bprint(11, 'RightDistance: '+ str(right_distance.distance(MM))+'mm' )        
-        if controllerA.buttonA.pressing():
-            rumble("--")
-        elif controllerA.buttonB.pressing():
-                    time_left = 105 - round(brain.timer.time(SECONDS))
         #Defining Timer:
-        if time_left > 0:
-            f_time = (105 - round(brain.timer.time(SECONDS)))
-        else:
-            f_time = round(brain.timer.time(SECONDS))
-        if f_time < 10 and f_time > 0: 
-            rumble("---") #Calls rumble function which vibrates said 
-            cprint(2,"Press B")
+
         #Updating ShooterGroup Velocity
         ShooterGroup.set_velocity(int(s_velocity), PERCENT)
         #Screen Updates:
         cprint(3, "Time: "+str(f_time)+"s")
         #Vibrate Controller Function
+        #Expansion Automator
+        if (controller_1.buttonB.pressing() and f_time < 10 and f_time > 0):
+            expansion.set(True)
+            rumble("-")
+            wait(5,SECONDS)
+            expansion.set(False)
 
             
 
 
 
-comp = Competition(driverControl(), autonomous_short)
+comp = Competition(driverControl, autonomous_short)
 preAutonomous()
