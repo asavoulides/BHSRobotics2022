@@ -154,13 +154,105 @@ def preAutonomous():
     calibrate_drivetrain()
 
 def autonomous_short():
-    pass
+    cprint(1, 'Auton. ON (SHORT)')
+    while rear_distance.object_distance(MM) > 70: 
+        drivetrain.drive(REVERSE)
+    #Terminating reverse functions
+    drivetrain.stop()
+    #Rotating Spinner
+    spinner.spin_for(REVERSE,spinner_for,DEGREES)
+    #Driving Forward for Launch
+    drivetrain.drive_for(FORWARD,50,MM)
+    pid(90)
+    disk_launch(80,2)
+    wait(2,SECONDS)    
 
 def autonomous_long():
-    pass
+    drivetrain.set_drive_velocity(60,PERCENT)
+    #Updating status on screen utilizing cprint function
+    cprint(1, "Auton. ON (LONG)")
+    disk_launch(65,2)
+    #Setting Velocities
+    #Autonomous Program
+    #While loop to reverse until distance sensor is roughly 700
+    drivetrain.drive_for(REVERSE, 580, MM)
+    #updating status on screen.
+    cprint(1,'Turning To Roller')
+    #turning right in preperation to get in contact with roller
+    pid(90)
+    #Updating status on screen
+    cprint(1, 'Reversing To Roller')
+    #Reversing to roller until the switch contact sensor detects contact
+    while rear_distance.object_distance(MM) > 70: 
+        drivetrain.drive(REVERSE)
+    #updating spinner status
+    cprint(1,'Rotating Spinner')
+    #spinning spinner for 10 degrees
+    spinner.spin_for(REVERSE,spinner_for,DEGREES)
+    drivetrain.stop()
+    controller_1.screen.clear_screen()
+      
 
 def autonomous_skills():
-    pass
+    pusher.set(True)
+    intake.set_velocity(100,PERCENT)
+    intake.spin(FORWARD)
+    #Updating Velocities
+    drivetrain.set_stopping(COAST)
+    drivetrain.set_drive_velocity(60,PERCENT)
+    #Reversing into Spinner #1
+    while rear_distance.object_distance(MM) > 70: 
+        drivetrain.drive(REVERSE)
+    spinner.spin_for(FORWARD,spinner_for,DEGREES)
+    drivetrain.stop()
+    #Going Forwards; preparing to pid into Spinner #2
+    while rear_distance.object_distance(MM) < 300:
+        drivetrain.drive(FORWARD)
+    drivetrain.stop()
+    #Reversing into Spinner #2
+    pid(90,70)
+    while rear_distance.object_distance(MM) > 70:
+        drivetrain.drive(REVERSE)
+    #Spinner Spinning #2
+    spinner.spin_for(FORWARD,spinner_for,DEGREES)
+    drivetrain.stop()
+    wait(1,SECONDS)
+    #Going towards Middle
+    while rear_distance.object_distance(MM) < 1600:
+        drivetrain.drive(FORWARD)
+    drivetrain.stop()
+    pid(17,70)
+    disk_launch(75,3)
+    intake.spin(FORWARD)
+    pid(73,70)
+    #At Middle
+    while rear_distance.object_distance(MM) > 700 or not(rear_distance.is_object_detected()):
+        drivetrain.drive(REVERSE)
+    drivetrain.stop()
+    pid(90,70)
+    #Going to Spinner #3
+    while rear_distance.object_distance(MM) > 65: 
+        drivetrain.drive(REVERSE)
+    drivetrain.set_drive_velocity(50,PERCENT)
+    spinner.spin_for(FORWARD,spinner_for,DEGREES)
+    drivetrain.stop()
+    drivetrain.set_drive_velocity(70,PERCENT)
+    #Going to Spinner #4
+    while rear_distance.object_distance(MM) < 300:
+        drivetrain.drive(FORWARD)
+    drivetrain.stop()
+    pid(-90,70)
+    while rear_distance.object_distance(MM) > 70: 
+        drivetrain.drive(REVERSE)
+    spinner.spin_for(FORWARD,spinner_for,DEGREES)
+    drivetrain.stop()
+    drivetrain.drive_for(FORWARD,5,INCHES)
+    pid(45)
+    expansion.set(True)
+    wait(5,SECONDS)
+    expansion.set(False)
+    controller_1.screen.clear_screen()
+    intake.stop()
 
 #----------------PID----------------
 
@@ -254,15 +346,15 @@ def driverControl():
 
 
         if controller_1.buttonR1.pressing(): 
-            Intake.set_velocity(100, PERCENT)
-            Intake.spin(FORWARD)
+            intake.set_velocity(100, PERCENT)
+            intake.spin(FORWARD)
 
         elif controller_1.buttonR2.pressing():
-            Intake.set_velocity(100, PERCENT)
-            Intake.spin(REVERSE)
+            intake.set_velocity(100, PERCENT)
+            intake.spin(REVERSE)
 
         else:
-            Intake.set_velocity(0, PERCENT)
+            intake.set_velocity(0, PERCENT)
 
 
         if controller_1.buttonDown.pressing():
@@ -310,7 +402,7 @@ def userFeedback():
         bprint(5,"RightB Temperature: ",str(right_motor_b.temperature(PERCENT)),"%")
         bprint(6,"RightC Temperature: ",str(right_motor_c.temperature(PERCENT)),"%")
         bprint(7,"Shooter Temperature: ", str(shooter.temperature(PERCENT)),"%")
-        bprint(8,"Intake/Spinner Temperature: ",str(intake.temperature(PERCENT)),"%")
+        bprint(8,"intake/Spinner Temperature: ",str(intake.temperature(PERCENT)),"%")
         bprint(9, 'RearDistance:' + str(rear_distance.object_distance(MM))+ 'mm')
         bprint(10, 'LeftDistance: ' +str(left_distance.distance(MM))+'mm')
         bprint(11, 'RightDistance: '+ str(right_distance.distance(MM))+'mm' )        
