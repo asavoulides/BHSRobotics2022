@@ -266,7 +266,7 @@ def pid(expected,d_velocity=100):
     while True:
         actual = drivetrain_inertial.rotation(DEGREES)
         error = (expected - actual)
-        speed = (error * 0.5)
+        speed = (error * 0.5) #Re-Adjust Variable through experimentation. 
 
         #---Velocity Updates---
         #LeftGroup 
