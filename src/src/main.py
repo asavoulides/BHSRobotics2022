@@ -305,7 +305,7 @@ def userFeedback():
         #Screen Updates:
         cprint(3, "Time: "+str(f_time)+"s")
         #Vibrate Controller Function
-        #Expansion Automator
+        #Expansion Deployment in Low Priority Loop 
         if (controller_1.buttonB.pressing() and f_time < 10 and f_time > 0):
             expansion.set(True)
             rumble("-")
