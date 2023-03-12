@@ -136,18 +136,18 @@ def bprint(row,text,column=1):
     brain.screen.set_cursor(row, column)
     brain.screen.print(str(text))
 
-#ShooterGroup Shooting Function
+#shooter Shooting Function
 def disk_launch(percent, times):
     intake.set_velocity(100, PERCENT)
     intake.spin(FORWARD)
     for i in range(times):
-        ShooterGroup.set_velocity(percent,PERCENT)
-        ShooterGroup.spin(FORWARD)
+        shooter.set_velocity(percent,PERCENT)
+        shooter.spin(FORWARD)
         wait(3,SECONDS)
         pusher.set(False)
         wait(200,MSEC)
         pusher.set(True)
-    ShooterGroup.stop()
+    shooter.stop()
     intake.stop()
 
 def preAutonomous():
@@ -214,55 +214,71 @@ def pid(expected,d_velocity=100):
 
 
 def driverControl():
+
     userFeedbackThread = Thread(userFeedback) #Creating Threads to maximize efficency
 
     drivetrain.set_drive_velocity(100,PERCENT)
+
     while True: 
+
         if controller_1.buttonL1.pressing():
-            #Displaying the ShooterGroup Velocity on Screen
-            cprint(2, 'Shooter: '+str(round((ShooterGroup.velocity(PERCENT)/s_velocity*100)))+'%')
-            ShooterGroup.spin(FORWARD)
+            #Displaying the shooter Velocity on Screen
+            shooter.spin(FORWARD)
         else:
             controller_1.screen.clear_row(2)
-            ShooterGroup.stop()
-            #ShooterGroup: -10
+            shooter.stop()
+
+            
+            #shooter: - 10
         if controller_1.buttonA.pressing() and (int(s_velocity) >= 70):
             s_velocity -= 10
             #update status with text/vibration
             rumble(".")
             cprint(1, 'Shooter: Veloc: '+str(s_velocity)+'%')
-            #ShooterGroup: +5
+
+
+            #shooter: +5
         if controller_1.buttonX.pressing() and (int(s_velocity) <= 95):
             s_velocity += 5
             #update status with text/vibration
             rumble(".")
             cprint(1, 'Shooter: Veloc: '+ str(s_velocity) +'%')
-            #ShooterGroup + 10
+
+
+            #shooter + 10
         if controller_1.buttonY.pressing() and (int(s_velocity) <= 90):
             s_velocity += 10
             #update status with text/vibration
             cprint(1, 'Shooter: Veloc: '+str(s_velocity)+ '%')
             rumble(".")
-        if controller_1.buttonR1.pressing():
+
+
+        if controller_1.buttonR1.pressing(): 
             Intake.set_velocity(100, PERCENT)
             Intake.spin(FORWARD)
+
         elif controller_1.buttonR2.pressing():
             Intake.set_velocity(100, PERCENT)
             Intake.spin(REVERSE)
+
         else:
             Intake.set_velocity(0, PERCENT)
+
+
         if controller_1.buttonDown.pressing():
             pusher.set(False)
             controller_1.rumble(".")
         else:
             pusher.set(True)
+
+
         if controller_1.buttonLeft.pressing():
             spinner.set_velocity(100, PERCENT)
             spinner.spin(FORWARD)
         elif controller_1.buttonRight.pressing():
             spinner.spin(REVERSE)
         else:
-            spinner.stop()
+            spinner.stop() 
 
 
 
@@ -300,8 +316,8 @@ def userFeedback():
         bprint(11, 'RightDistance: '+ str(right_distance.distance(MM))+'mm' )        
         #Defining Timer:
 
-        #Updating ShooterGroup Velocity
-        ShooterGroup.set_velocity(int(s_velocity), PERCENT)
+        #Updating shooter Velocity
+        shooter.set_velocity(int(s_velocity), PERCENT)
         #Screen Updates:
         cprint(3, "Time: "+str(f_time)+"s")
         #Vibrate Controller Function
@@ -311,9 +327,13 @@ def userFeedback():
             rumble("-")
             wait(5,SECONDS)
             expansion.set(False)
-
+        if controller_1.buttonL1.pressing():
+        #Displaying the shooter Velocity on Screen
+            cprint(2, 'Shooter: '+str(round((shooter.velocity(PERCENT)/s_velocity*100)))+'%')
             
 
+
+#--Competition Template--
 
 
 comp = Competition(driverControl, autonomous_short)
