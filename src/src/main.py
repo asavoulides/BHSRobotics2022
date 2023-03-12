@@ -23,6 +23,8 @@ drivetrain_inertial = Inertial(Ports.PORT5)
 drivetrain = SmartDrive(left_drive_smart, right_drive_smart, drivetrain_inertial, 319.19, 320, 40, MM, 1)
 controller_1 = Controller(PRIMARY)
 spinner = Motor(Ports.PORT6, GearSetting.RATIO_18_1, False)
+intake = spinner
+shooter = Motor(Ports.PORT7, GearSetting.RATIO_18_1, False)
 #Phnumatics
 pusher = DigitalOut(brain.three_wire_port.a)
 expansion = DigitalOut(brain.three_wire_port.b)
@@ -173,16 +175,26 @@ def pid(expected,d_velocity=100):
         actual = drivetrain_inertial.rotation(DEGREES)
         error = (expected - actual)
         speed = (error * 0.5)
+
+        #---Velocity Updates---
+        #LeftGroup 
         left_motor_a.set_velocity(speed,PERCENT)
         left_motor_b.set_velocity(speed,PERCENT)
+        left_motor_c.set_velocity(speed,PERCENT)
+        #RightGroup
         right_motor_a.set_velocity(-speed,PERCENT)
         right_motor_b.set_velocity(-speed,PERCENT)
+        right_motor_c.set_velocity(-speed,PERCENT)
         
+        #---Spinning---
+        #LeftGroup Spin
         left_motor_a.spin(FORWARD)
         left_motor_b.spin(FORWARD)
+        left_motor_c.spin(FORWARD)
+        #RightGroup Spin
         right_motor_a.spin(FORWARD)
         right_motor_b.spin(FORWARD)
-        
+        right_motor_c.spin(FORWARD)
         cprint(2,str(error))
 
         if abs(error) < 2:
@@ -191,23 +203,118 @@ def pid(expected,d_velocity=100):
         wait(0.15,SECONDS)
             
     drivetrain.stop()
+    
     left_motor_a.set_velocity(d_velocity,PERCENT)
     left_motor_b.set_velocity(d_velocity,PERCENT)
+    left_motor_c.set_velocity(d_velocity,PERCENT)
     right_motor_a.set_velocity(d_velocity,PERCENT)
     right_motor_b.set_velocity(d_velocity,PERCENT)
+    right_motor_c.set_velocity(d_velocity,PERCENT)
     cprint(2,'PID Completed') 
 
 
 def driverControl():
     userFeedbackThread = Thread(userFeedback) #Creating Threads to maximize efficency
-    while True:
-        pass
+
+    drivetrain.set_drive_velocity(100,PERCENT)
+    while True: 
+        if controller_1.buttonL1.pressing():
+            #Displaying the ShooterGroup Velocity on Screen
+            cprint(2, 'Shooter: '+str(round((ShooterGroup.velocity(PERCENT)/s_velocity*100)))+'%')
+            ShooterGroup.spin(FORWARD)
+        else:
+            controller_1.screen.clear_row(2)
+            ShooterGroup.stop()
+            #ShooterGroup: -10
+        if controller_1.buttonA.pressing() and (int(s_velocity) >= 70):
+            s_velocity -= 10
+            #update status with text/vibration
+            rumble(".")
+            cprint(1, 'Shooter: Veloc: '+str(s_velocity)+'%')
+            #ShooterGroup: +5
+        if controller_1.buttonX.pressing() and (int(s_velocity) <= 95):
+            s_velocity += 5
+            #update status with text/vibration
+            rumble(".")
+            cprint(1, 'Shooter: Veloc: '+ str(s_velocity) +'%')
+            #ShooterGroup + 10
+        if controller_1.buttonY.pressing() and (int(s_velocity) <= 90):
+            s_velocity += 10
+            #update status with text/vibration
+            cprint(1, 'Shooter: Veloc: '+str(s_velocity)+ '%')
+            rumble(".")
+        if controller_1.buttonR1.pressing():
+            Intake.set_velocity(100, PERCENT)
+            Intake.spin(FORWARD)
+        elif controller_1.buttonR2.pressing():
+            Intake.set_velocity(100, PERCENT)
+            Intake.spin(REVERSE)
+        else:
+            Intake.set_velocity(0, PERCENT)
+        if controller_1.buttonDown.pressing():
+            pusher.set(False)
+            controller_1.rumble(".")
+        else:
+            pusher.set(True)
+        if controller_1.buttonLeft.pressing():
+            spinner.set_velocity(100, PERCENT)
+            spinner.spin(FORWARD)
+        elif controller_1.buttonRight.pressing():
+            spinner.spin(REVERSE)
+        else:
+            spinner.stop()
+
+
 
 def userFeedback():
+    #Log Start:
+    brain.timer.clear()
+    #Initiate Full Screen
+    controller_1.screen.clear_screen()
+    #setting shooter velocity variable to 75%
+    s_velocity = 75
+    #updating the shooter velocity after autonomous mode
+    cprint(1, 'Shooter: Veloc: '+str(s_velocity)+'%')
+    #Drive Velocity
     while True:
-        pass
+        #Time Calculations:
+        time_left = 105 - round(brain.timer.time(SECONDS))
+        if time_left > 0:
+            f_time = (105 - round(brain.timer.time(SECONDS)))
+        else:
+            f_time = round(brain.timer.time(SECONDS))
+        if f_time < 10 and f_time > 0: 
+            rumble("---") #Calls rumble function which vibrates said 
+            cprint(2,"Press B")
 
-my_thread1 = Thread(driverControl)
+        bprint(1,"LeftA Temperature: ", str(left_motor_a.temperature(PERCENT)),"%")
+        bprint(2,"LeftB Temperature: ", str(left_motor_b.temperature(PERCENT)),"%")
+        bprint(3,"LeftC Temperature: ", str(left_motor_c.temperature(PERCENT)),"%")
+        bprint(4,"RightA Temperature: ",str(right_motor_a.temperature(PERCENT)),"%")
+        bprint(5,"RightB Temperature: ",str(right_motor_b.temperature(PERCENT)),"%")
+        bprint(6,"RightC Temperature: ",str(right_motor_c.temperature(PERCENT)),"%")
+        bprint(7,"Shooter Temperature: ", str(shooter.temperature(PERCENT)),"%")
+        bprint(8,"Intake/Spinner Temperature: ",str(intake.temperature(PERCENT)),"%")
+        bprint(9, 'RearDistance:' + str(rear_distance.object_distance(MM))+ 'mm')
+        bprint(10, 'LeftDistance: ' +str(left_distance.distance(MM))+'mm')
+        bprint(11, 'RightDistance: '+ str(right_distance.distance(MM))+'mm' )        
+        #Defining Timer:
+
+        #Updating ShooterGroup Velocity
+        ShooterGroup.set_velocity(int(s_velocity), PERCENT)
+        #Screen Updates:
+        cprint(3, "Time: "+str(f_time)+"s")
+        #Vibrate Controller Function
+        #Expansion Automator
+        if (controller_1.buttonB.pressing() and f_time < 10 and f_time > 0):
+            expansion.set(True)
+            rumble("-")
+            wait(5,SECONDS)
+            expansion.set(False)
+
+            
+
+
 
 comp = Competition(driverControl, autonomous_short)
 preAutonomous()
