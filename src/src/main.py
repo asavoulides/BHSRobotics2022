@@ -28,7 +28,12 @@ shooter = Motor(Ports.PORT9, GearSetting.RATIO_18_1, False)
 pusher = DigitalOut(brain.three_wire_port.a)
 expansion = DigitalOut(brain.three_wire_port.b)
 # wait for rotation sensor to fully initialize
+rear_distance = Distance(Ports.PORT20)
+left_distance = Sonar(brain.three_wire_port.e)
+right_distance = Sonar(brain.three_wire_port.d)
 wait(30, MSEC)
+
+spinner_for: int = 100
 
 def calibrate_drivetrain():
     # Calibrate the Drivetrain Inertial
@@ -70,6 +75,8 @@ def preAutonomous():
     calibrate_drivetrain()
 
 def autonomous_short():
+    global spinner_for 
+
     cprint(1, 'Auton. ON (SHORT)')
     while rear_distance.object_distance(MM) > 70: 
         drivetrain.drive(REVERSE)
@@ -110,6 +117,8 @@ def autonomous_long():
       
 
 def autonomous_skills():
+    global spinner_for
+
     pusher.set(True)
     intake.set_velocity(100,PERCENT)
     intake.spin(FORWARD)
@@ -301,17 +310,17 @@ def userFeedback():
         #--- Time Function Over ---
 
         #--- Instrument Status Print ---
-        bprint(1,"LeftA Temperature: ", str(left_motor_a.temperature(PERCENT)),"%")
-        bprint(2,"LeftB Temperature: ", str(left_motor_b.temperature(PERCENT)),"%")
-        bprint(3,"LeftC Temperature: ", str(left_motor_c.temperature(PERCENT)),"%")
-        bprint(4,"RightA Temperature: ",str(right_motor_a.temperature(PERCENT)),"%")
-        bprint(5,"RightB Temperature: ",str(right_motor_b.temperature(PERCENT)),"%")
-        bprint(6,"RightC Temperature: ",str(right_motor_c.temperature(PERCENT)),"%")
-        bprint(7,"Shooter Temperature: ", str(shooter.temperature(PERCENT)),"%")
-        bprint(8,"intake/Spinner Temperature: ",str(intake.temperature(PERCENT)),"%")
-        bprint(9, 'RearDistance:',str(rear_distance.object_distance(MM))+ 'mm')
-        bprint(10, 'LeftDistance: ', str(left_distance.distance(MM))+'mm')
-        bprint(11, 'RightDistance: ', str(right_distance.distance(MM))+'mm' )        
+        bprint(1,"LeftA Temperature: "+ str(left_motor_a.temperature(PERCENT))+"%")
+        bprint(2,"LeftB Temperature: "+ str(left_motor_b.temperature(PERCENT))+"%")
+        bprint(3,"LeftC Temperature: "+ str(left_motor_c.temperature(PERCENT))+"%")
+        bprint(4,"RightA Temperature: "+str(right_motor_a.temperature(PERCENT))+"%")
+        bprint(5,"RightB Temperature: "+str(right_motor_b.temperature(PERCENT))+"%")
+        bprint(6,"RightC Temperature: "+str(right_motor_c.temperature(PERCENT))+"%")
+        bprint(7,"Shooter Temperature: "+str(shooter.temperature(PERCENT))+"%")
+        bprint(8,"intake/Spinner Temperature: "+str(intake.temperature(PERCENT))+"%")
+        bprint(9, 'RearDistance:'+str(rear_distance.object_distance(MM))+ 'mm')
+        bprint(10, 'LeftDistance: '+ str(left_distance.distance(MM))+'mm')
+        bprint(11, 'RightDistance: '+ str(right_distance.distance(MM))+'mm' )        
         #--- Instrument Status Print Over ---
 
         #----- Misceleanious -----
