@@ -1,4 +1,4 @@
-from vex import *
+from vex import * 
 
 # Brain should be defined by default
 brain=Brain()
