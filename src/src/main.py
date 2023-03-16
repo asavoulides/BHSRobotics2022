@@ -232,16 +232,14 @@ def pid(expected,d_velocity=100):
 s_velocity = 0 
 
 def driverControl():
-
     global s_velocity
     
-    userFeedbackThread = Thread(userFeedback) #Creating Threads to maximize efficency
-
+    #Creating Threads to maximize efficency
+    userFeedbackThread = Thread(userFeedback) 
     driveTrainControl = Thread(drivetrainControl)
 
-    drivetrain.set_drive_velocity(100,PERCENT)
-
     while True: 
+        #Shooter Spin Forward
         if controller_1.buttonL1.pressing():
             #Displaying the shooter Velocity on Screen
             shooter.spin(FORWARD)
@@ -251,15 +249,12 @@ def driverControl():
             #shooter: - 10
         if controller_1.buttonA.pressing() and (int(s_velocity) >= 70):
             s_velocity -= 10
-            #update status with text/vibration
             #shooter: +5
         if controller_1.buttonX.pressing() and (int(s_velocity) <= 95):
             s_velocity += 5
-            #update status with text/vibration
             #shooter + 10
         if controller_1.buttonY.pressing() and (int(s_velocity) <= 90):
             s_velocity += 10
-            #update status with text/vibration
         if controller_1.buttonR1.pressing(): 
             intake.set_velocity(100, PERCENT)
             intake.spin(FORWARD)
@@ -355,6 +350,7 @@ def userFeedback():
             rumble(".")
         if controller_1.buttonDown.pressing():
             controller_1.rumble(".")
+
             
 def drivetrainControl():
     while True:
