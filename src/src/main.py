@@ -273,7 +273,7 @@ def driverControl():
         elif controller_1.buttonRight.pressing():
             spinner.spin(REVERSE)
         else:
-            spinner.stop() 
+            spinner.stop()
 
 
 
