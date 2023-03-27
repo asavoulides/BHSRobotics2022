@@ -358,10 +358,10 @@ def drivetrainControl():
         left_speed = controller_1.axis3.position()
         right_speed = controller_1.axis2.position()
 
-        left_drive_smart.set_velocity(left_speed)
+        left_drive_smart.set_velocity(left_speed,PERCENT)
         left_drive_smart.spin(FORWARD)
 
-        right_drive_smart.set_velocity(right_speed)
+        right_drive_smart.set_velocity(right_speed, PERCENT)
         right_drive_smart.spin(FORWARD)
 
 
