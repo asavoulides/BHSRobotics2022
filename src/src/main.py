@@ -29,8 +29,9 @@ pusher = DigitalOut(brain.three_wire_port.a)
 expansion = DigitalOut(brain.three_wire_port.b)
 # wait for rotation sensor to fully initialize
 rear_distance = Distance(Ports.PORT20)
-left_distance = Sonar(brain.three_wire_port.e)
-right_distance = Sonar(brain.three_wire_port.d)
+front_distance = Sonar(brain.three_wire_port.e)
+left_distance = Sonar(brain.three_wire_port.c)
+right_distance = Sonar(brain.three_wire_port.a)
 wait(30, MSEC)
 
 spinner_for: int = 100
