@@ -230,7 +230,7 @@ def pid(expected,d_velocity=100):
     right_motor_c.set_velocity(d_velocity,PERCENT)
     cprint(2,'PID Completed') 
 
-s_velocity = 0 
+s_velocity = 75
 
 def driverControl():
     global s_velocity
@@ -240,22 +240,31 @@ def driverControl():
     driveTrainControl = Thread(drivetrainControl)
 
     while True: 
+        shooter.set_velocity(s_velocity,PERCENT)
         #Shooter Spin Forward
         if controller_1.buttonL1.pressing():
             #Displaying the shooter Velocity on Screen
             shooter.spin(REVERSE)
+            #Displaying the shooter Velocity on Screen
+            cprint(2, 'Shooter: '+str(round((shooter.velocity(PERCENT)/s_velocity*100)))+'%')    
         else:
             controller_1.screen.clear_row(2)
             shooter.stop()            
             #shooter: - 10
         if controller_1.buttonA.pressing() and (int(s_velocity) >= 70):
             s_velocity -= 10
+            rumble(".")
+            cprint(1, 'Shooter: Veloc: '+str(s_velocity)+'%')
             #shooter: +5
         if controller_1.buttonX.pressing() and (int(s_velocity) <= 95):
             s_velocity += 5
+            cprint(1, 'Shooter: Veloc: '+ str(s_velocity) +'%')
+            rumble(".")
             #shooter + 10
         if controller_1.buttonY.pressing() and (int(s_velocity) <= 90):
             s_velocity += 10
+            cprint(1, 'Shooter: Veloc: '+str(s_velocity)+ '%')
+            rumble(".")
         if controller_1.buttonR1.pressing(): 
             spinner.set_velocity(100, PERCENT)
             spinner.spin(FORWARD)
@@ -277,8 +286,6 @@ def userFeedback():
     brain.timer.clear()
     #Initiate Full Screen
     controller_1.screen.clear_screen()
-    #setting shooter velocity variable to 75%
-    s_velocity = 75
     #updating the shooter velocity after autonomous mode
     cprint(1, 'Shooter: Veloc: '+str(s_velocity)+'%')
     #Drive Velocity
@@ -311,13 +318,7 @@ def userFeedback():
         bprint(9, 'RearDistance:'+str(rear_distance.object_distance(MM))+ 'mm')
         bprint(10, 'LeftDistance: '+ str(left_distance.distance(MM))+'mm')
         bprint(11, 'RightDistance: '+ str(right_distance.distance(MM))+'mm' )        
-        #--- Instrument Status Print Over ---
-
-        #----- Misceleanious -----
-
-        #Shooter Velocity Update
-        shooter.set_velocity(int(s_velocity), PERCENT)
-    
+        #--- Instrument Status Print Over ---    
 
         #--- Expansion Launch ---
         if (controller_1.buttonB.pressing() and f_time < 10 and f_time > 0):
@@ -327,24 +328,8 @@ def userFeedback():
             expansion.set(False)
 
         #--- Shooter Velocity Print ---
-        if controller_1.buttonL1.pressing():
-            #Displaying the shooter Velocity on Screen
-            cprint(2, 'Shooter: '+str(round((shooter.velocity(PERCENT)/s_velocity*100)))+'%')
-        else:
-            controller_1.screen.clear_row(2)      
+    
 
-        #--- ShooterGroup Velocity Updates --- 
-        if controller_1.buttonA.pressing() and (int(s_velocity) >= 70):
-            rumble(".")
-            cprint(1, 'Shooter: Veloc: '+str(s_velocity)+'%')
-        if controller_1.buttonX.pressing() and (int(s_velocity) <= 95):
-            cprint(1, 'Shooter: Veloc: '+ str(s_velocity) +'%')
-            rumble(".")
-        if controller_1.buttonY.pressing() and (int(s_velocity) <= 90):
-            cprint(1, 'Shooter: Veloc: '+str(s_velocity)+ '%')
-            rumble(".")
-        if controller_1.buttonDown.pressing():
-            controller_1.rumble(".")
 
             
 def drivetrainControl():
