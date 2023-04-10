@@ -22,7 +22,7 @@ drivetrain_inertial = Inertial(Ports.PORT15)
 drivetrain = SmartDrive(left_drive_smart, right_drive_smart, drivetrain_inertial, 319.19, 320, 40, MM, 1)
 controller_1 = Controller(PRIMARY)
 spinner = Motor(Ports.PORT7, GearSetting.RATIO_18_1, False)
-shooter = Motor(Ports.PORT8, GearSetting.RATIO_18_1, False)
+shooter = Motor(Ports.PORT8, GearSetting.RATIO_6_1, False)
 #Phnumatics
 pusher = DigitalOut(brain.three_wire_port.a)
 expansion = DigitalOut(brain.three_wire_port.b)
@@ -243,7 +243,7 @@ def driverControl():
         #Shooter Spin Forward
         if controller_1.buttonL1.pressing():
             #Displaying the shooter Velocity on Screen
-            shooter.spin(FORWARD)
+            shooter.spin(REVERSE)
         else:
             controller_1.screen.clear_row(2)
             shooter.stop()            
