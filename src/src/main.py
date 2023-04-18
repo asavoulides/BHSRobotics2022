@@ -304,7 +304,7 @@ def driverControl():
 def userFeedback():
     print("UserFeedback Loop Succesfully Ran")
     while True:
-        wait(1,SECONDS)
+        wait(160,MSEC)
         #--- Instrument Status Print ---
         brain.screen.clear_screen()
         #Headers
@@ -322,7 +322,7 @@ def userFeedback():
         bprint(6,"ShooterA :")
         bprint(7,"ShooterB :")
         bprint(8,"In./Spin :")
-        bprint(9,"--DISTANCE--")
+        bprint(9,"--DISTANCE Sensors--")
         bprint(10, "RearDistance")
         bprint(11, "LeftDistance:")
         bprint(12, "RightDistance:")       
@@ -362,7 +362,13 @@ def userFeedback():
         bprint(6,str(round(shooterA.efficiency(PERCENT)))+"%", 37)
         bprint(7,str(round(shooterB.efficiency(PERCENT)))+"%", 37)
         bprint(8,str(round(spinner.efficiency(PERCENT)))+"%", 37)   
-    
+        
+        #---Distance---
+        bprint(9,"MM",25)
+        bprint(10, str(rear_distance.object_distance(MM))+'mm',25)
+        bprint(11, str(left_distance.distance(MM))+'mm',25)
+        bprint(12, str(right_distance.distance(MM))+'mm',25)
+
 
             
 def drivetrainControl():
