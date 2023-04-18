@@ -6,23 +6,23 @@ brain=Brain()
 # Robot configuration code
 #Left Drivetrain
 left_motor_a = Motor(Ports.PORT1, GearSetting.RATIO_18_1, False)
-left_motor_b = Motor(Ports.PORT2, GearSetting.RATIO_18_1, False)
 left_motor_c = Motor(Ports.PORT3, GearSetting.RATIO_18_1, False)
 #Left Group
-left_drive_smart = MotorGroup(left_motor_a, left_motor_b, left_motor_c)
+left_drive_smart = MotorGroup(left_motor_a, left_motor_c)
 #Right Drivetrain
 right_motor_a = Motor(Ports.PORT4, GearSetting.RATIO_18_1, True)
-right_motor_b = Motor(Ports.PORT5, GearSetting.RATIO_18_1, True)
 right_motor_c = Motor(Ports.PORT6, GearSetting.RATIO_18_1, True)
 #Right Group
-right_drive_smart = MotorGroup(right_motor_a, right_motor_b,right_motor_c)
+right_drive_smart = MotorGroup(right_motor_a,right_motor_c)
 #Inertial
 drivetrain_inertial = Inertial(Ports.PORT15)
 #Drivetrain Declaration
 drivetrain = SmartDrive(left_drive_smart, right_drive_smart, drivetrain_inertial, 319.19, 320, 40, MM, 1)
 controller_1 = Controller(PRIMARY)
 spinner = Motor(Ports.PORT7, GearSetting.RATIO_18_1, False)
-shooter = Motor(Ports.PORT8, GearSetting.RATIO_6_1, False)
+shooterA = Motor(Ports.PORT8, GearSetting.RATIO_18_1, False) #13 forward
+shooterB = Motor(Ports.PORT14, GearSetting.RATIO_18_1, True) #14 reverse
+shooter = MotorGroup(shooterA, shooterB)
 #Phnumatics
 pusher = DigitalOut(brain.three_wire_port.a)
 expansion = DigitalOut(brain.three_wire_port.b)
@@ -196,21 +196,17 @@ def pid(expected,d_velocity=100):
         #---Velocity Updates---
         #LeftGroup 
         left_motor_a.set_velocity(speed,PERCENT)
-        left_motor_b.set_velocity(speed,PERCENT)
         left_motor_c.set_velocity(speed,PERCENT)
         #RightGroup
         right_motor_a.set_velocity(-speed,PERCENT)
-        right_motor_b.set_velocity(-speed,PERCENT)
         right_motor_c.set_velocity(-speed,PERCENT)
         
         #---Spinning---
         #LeftGroup Spin
         left_motor_a.spin(FORWARD)
-        left_motor_b.spin(FORWARD)
         left_motor_c.spin(FORWARD)
         #RightGroup Spin
         right_motor_a.spin(FORWARD)
-        right_motor_b.spin(FORWARD)
         right_motor_c.spin(FORWARD)
         cprint(2,str(error))
 
@@ -223,10 +219,8 @@ def pid(expected,d_velocity=100):
 
     #---Resetting DriveTrain Velocity---
     left_motor_a.set_velocity(d_velocity,PERCENT)
-    left_motor_b.set_velocity(d_velocity,PERCENT)
     left_motor_c.set_velocity(d_velocity,PERCENT)
     right_motor_a.set_velocity(d_velocity,PERCENT)
-    right_motor_b.set_velocity(d_velocity,PERCENT)
     right_motor_c.set_velocity(d_velocity,PERCENT)
     cprint(2,'PID Completed') 
 
@@ -244,7 +238,7 @@ def driverControl():
         #Shooter Spin Forward
         if controller_1.buttonL1.pressing():
             #Displaying the shooter Velocity on Screen
-            shooter.spin(REVERSE)
+            shooter.spin(FORWARD)
             #Displaying the shooter Velocity on Screen
             cprint(2, 'Shooter: '+str(round((shooter.velocity(PERCENT)/s_velocity*100)))+'%')    
         else:
@@ -308,12 +302,10 @@ def userFeedback():
 
         #--- Instrument Status Print ---
         bprint(1,"LeftA Temperature: "+ str(left_motor_a.temperature(PERCENT))+"%")
-        bprint(2,"LeftB Temperature: "+ str(left_motor_b.temperature(PERCENT))+"%")
         bprint(3,"LeftC Temperature: "+ str(left_motor_c.temperature(PERCENT))+"%")
         bprint(4,"RightA Temperature: "+str(right_motor_a.temperature(PERCENT))+"%")
-        bprint(5,"RightB Temperature: "+str(right_motor_b.temperature(PERCENT))+"%")
         bprint(6,"RightC Temperature: "+str(right_motor_c.temperature(PERCENT))+"%")
-        bprint(7,"Shooter Temperature: "+str(shooter.temperature(PERCENT))+"%")
+        bprint(7,"ShooterA Temperature: "+str(shooterA.temperature(PERCENT))+"%")
         bprint(8,"Intake/Spinner Temperature: "+str(spinner.temperature(PERCENT))+"%")
         bprint(9, 'RearDistance:'+str(rear_distance.object_distance(MM))+ 'mm')
         bprint(10, 'LeftDistance: '+ str(left_distance.distance(MM))+'mm')
