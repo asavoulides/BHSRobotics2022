@@ -6,22 +6,22 @@ brain=Brain()
 # Robot configuration code
 #Left Drivetrain
 left_motor_a = Motor(Ports.PORT1, GearSetting.RATIO_18_1, False)
-left_motor_c = Motor(Ports.PORT3, GearSetting.RATIO_18_1, False)
+left_motor_b = Motor(Ports.PORT3, GearSetting.RATIO_18_1, False)
 #Left Group
-left_drive_smart = MotorGroup(left_motor_a, left_motor_c)
+left_drive_smart = MotorGroup(left_motor_a, left_motor_b)
 #Right Drivetrain
 right_motor_a = Motor(Ports.PORT4, GearSetting.RATIO_18_1, True)
-right_motor_c = Motor(Ports.PORT6, GearSetting.RATIO_18_1, True)
+right_motor_b = Motor(Ports.PORT6, GearSetting.RATIO_18_1, True)
 #Right Group
-right_drive_smart = MotorGroup(right_motor_a,right_motor_c)
+right_drive_smart = MotorGroup(right_motor_a,right_motor_b)
 #Inertial
 drivetrain_inertial = Inertial(Ports.PORT15)
 #Drivetrain Declaration
 drivetrain = SmartDrive(left_drive_smart, right_drive_smart, drivetrain_inertial, 319.19, 320, 40, MM, 1)
 controller_1 = Controller(PRIMARY)
 spinner = Motor(Ports.PORT7, GearSetting.RATIO_18_1, False)
-shooterA = Motor(Ports.PORT8, GearSetting.RATIO_18_1, False) #13 forward
-shooterB = Motor(Ports.PORT14, GearSetting.RATIO_18_1, True) #14 reverse
+shooterA = Motor(Ports.PORT12, GearSetting.RATIO_6_1) #13 forward
+shooterB = Motor(Ports.PORT13, GearSetting.RATIO_6_1, True) #14 reverse
 shooter = MotorGroup(shooterA, shooterB)
 #Phnumatics
 pusher = DigitalOut(brain.three_wire_port.a)
@@ -53,7 +53,8 @@ def rumble(patern):
 
 #Function to print on brain mainly to clear clutter
 def bprint(row,text,column=1):
-    brain.screen.clear_row(row)
+    if column == 1:
+        brain.screen.clear_row(row)
     brain.screen.set_cursor(row, column)
     brain.screen.print(str(text))
 
@@ -196,18 +197,18 @@ def pid(expected,d_velocity=100):
         #---Velocity Updates---
         #LeftGroup 
         left_motor_a.set_velocity(speed,PERCENT)
-        left_motor_c.set_velocity(speed,PERCENT)
+        left_motor_b.set_velocity(speed,PERCENT)
         #RightGroup
         right_motor_a.set_velocity(-speed,PERCENT)
-        right_motor_c.set_velocity(-speed,PERCENT)
+        right_motor_b.set_velocity(-speed,PERCENT)
         
         #---Spinning---
         #LeftGroup Spin
         left_motor_a.spin(FORWARD)
-        left_motor_c.spin(FORWARD)
+        left_motor_b.spin(FORWARD)
         #RightGroup Spin
         right_motor_a.spin(FORWARD)
-        right_motor_c.spin(FORWARD)
+        right_motor_b.spin(FORWARD)
         cprint(2,str(error))
 
         if abs(error) < 2:
@@ -219,18 +220,19 @@ def pid(expected,d_velocity=100):
 
     #---Resetting DriveTrain Velocity---
     left_motor_a.set_velocity(d_velocity,PERCENT)
-    left_motor_c.set_velocity(d_velocity,PERCENT)
+    left_motor_b.set_velocity(d_velocity,PERCENT)
     right_motor_a.set_velocity(d_velocity,PERCENT)
-    right_motor_c.set_velocity(d_velocity,PERCENT)
+    right_motor_b.set_velocity(d_velocity,PERCENT)
     cprint(2,'PID Completed') 
 
 s_velocity = 75
 
 def driverControl():
     global s_velocity
-    
+
+    controller_1.screen.clear_screen()
+
     #Creating Threads to maximize efficency
-    userFeedbackThread = Thread(userFeedback) 
     driveTrainControl = Thread(drivetrainControl)
 
     while True: 
@@ -272,19 +274,7 @@ def driverControl():
         else:
             pusher.set(True)
 
-
-
-
-def userFeedback():
-    #Log Start:
-    brain.timer.clear()
-    #Initiate Full Screen
-    controller_1.screen.clear_screen()
-    #updating the shooter velocity after autonomous mode
-    cprint(1, 'Shooter: Veloc: '+str(s_velocity)+'%')
-    #Drive Velocity
-    while True:
-        #--- Time Start ---
+        #----- User Feedback -----
         time_left = 105 - round(brain.timer.time(SECONDS))
 
         if time_left > 0:
@@ -294,32 +284,82 @@ def userFeedback():
             f_time = round(brain.timer.time(SECONDS))
 
         if f_time < 10 and f_time > 0: 
-            rumble("---") #Calls rumble function which vibrates said 
-            cprint(2,"Press B")
+            #rumble("---") #Calls rumble function which vibrates said 
+            cprint(2,"Press B for Expansion")
 
         cprint(3, "Time: "+str(f_time)+"s")
         #--- Time Function Over ---
-
-        #--- Instrument Status Print ---
-        bprint(1,"LeftA Temperature: "+ str(left_motor_a.temperature(PERCENT))+"%")
-        bprint(3,"LeftC Temperature: "+ str(left_motor_c.temperature(PERCENT))+"%")
-        bprint(4,"RightA Temperature: "+str(right_motor_a.temperature(PERCENT))+"%")
-        bprint(6,"RightC Temperature: "+str(right_motor_c.temperature(PERCENT))+"%")
-        bprint(7,"ShooterA Temperature: "+str(shooterA.temperature(PERCENT))+"%")
-        bprint(8,"Intake/Spinner Temperature: "+str(spinner.temperature(PERCENT))+"%")
-        bprint(9, 'RearDistance:'+str(rear_distance.object_distance(MM))+ 'mm')
-        bprint(10, 'LeftDistance: '+ str(left_distance.distance(MM))+'mm')
-        bprint(11, 'RightDistance: '+ str(right_distance.distance(MM))+'mm' )        
-        #--- Instrument Status Print Over ---    
-
         #--- Expansion Launch ---
         if (controller_1.buttonB.pressing() and f_time < 10 and f_time > 0):
             expansion.set(True)
             rumble("-")
             wait(5,SECONDS)
             expansion.set(False)
+        #--- Instrument Status Print ---
+        brain.screen.clear_screen()
+        #Headers
+        bprint(1,"Temp. |", 13)
+        bprint(1,"Pos. |", 20 )
+        bprint(1,"Torque |",27)
+        bprint(1,"Eff. |",37)
 
-        #--- Shooter Velocity Print ---
+        #Column #1
+        bprint(2,"LeftA : ")
+        bprint(3,"LeftB : ")
+        bprint(4,"RightA :")
+        bprint(5,"RightB :")
+        bprint(6,"ShooterA :")
+        bprint(7,"ShooterB :")
+        bprint(8,"In./Spin :")
+        bprint(9, "RearDistance")
+        bprint(10, "LeftDistance:")
+        bprint(11, "RightDistance:")       
+
+        #Temperature
+        bprint(2,str(left_motor_a.temperature(PERCENT))+"%", 13)
+        bprint(3,str(left_motor_b.temperature(PERCENT))+"%", 13)
+        bprint(4,str(right_motor_a.temperature(PERCENT))+"%", 13)
+        bprint(5,str(right_motor_a.temperature(PERCENT))+"%", 13)
+        bprint(6,str(shooterA.temperature(PERCENT))+"%", 13)
+        bprint(7,str(shooterB.temperature(PERCENT))+"%", 13)
+        bprint(8,str(spinner.temperature(PERCENT))+"%", 13)
+
+        #Position
+        bprint(2,str(round(left_motor_a.position(DEGREES))), 20)
+        bprint(3,str(round(left_motor_b.position(DEGREES))), 20)
+        bprint(4,str(round(right_motor_a.position(DEGREES))), 20)
+        bprint(5,str(round(right_motor_a.position(DEGREES))), 20)
+        bprint(6,str(round(shooterA.position(DEGREES))), 20)
+        bprint(7,str(round(shooterB.position(DEGREES))), 20)
+        bprint(8,str(round(spinner.position(DEGREES))), 20)
+
+        #Torque
+        bprint(2,str(round(left_motor_a.torque(TorqueUnits.NM)))+"NM", 27)
+        bprint(3,str(round(left_motor_b.torque(TorqueUnits.NM)))+"NM", 27)
+        bprint(4,str(round(right_motor_a.torque(TorqueUnits.NM)))+"NM", 27)
+        bprint(5,str(round(right_motor_a.torque(TorqueUnits.NM)))+"NM", 27)
+        bprint(6,str(round(shooterA.torque(TorqueUnits.NM)))+"NM", 27)
+        bprint(7,str(round(shooterB.torque(TorqueUnits.NM)))+"NM", 27)
+        bprint(8,str(round(spinner.torque(TorqueUnits.NM)))+"NM", 27)
+
+        #Efficency
+        bprint(2,str(round(left_motor_a.efficiency(PERCENT)))+"%", 37)
+        bprint(3,str(round(left_motor_b.efficiency(PERCENT)))+"%", 37)
+        bprint(4,str(round(right_motor_a.efficiency(PERCENT)))+"%", 37)
+        bprint(5,str(round(right_motor_a.efficiency(PERCENT)))+"%", 37)
+        bprint(6,str(round(shooterA.efficiency(PERCENT)))+"%", 37)
+        bprint(7,str(round(shooterB.efficiency(PERCENT)))+"%", 37)
+        bprint(8,str(round(spinner.efficiency(PERCENT)))+"%", 37)   
+    
+        
+
+
+        #--- Instrument Status Print Over ---    
+
+
+
+
+
     
 
 
