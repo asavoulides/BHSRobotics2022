@@ -234,6 +234,7 @@ def driverControl():
 
     #Creating Threads to maximize efficency
     driveTrainControl = Thread(drivetrainControl)
+    userfeedback = Thread(userFeedback)
 
     while True: 
         shooter.set_velocity(s_velocity,PERCENT)
@@ -295,9 +296,19 @@ def driverControl():
             rumble("-")
             wait(5,SECONDS)
             expansion.set(False)
+
+        
+
+
+        #--- Instrument Status Print Over ---    
+def userFeedback():
+    print("UserFeedback Loop Succesfully Ran")
+    while True:
+        wait(1,SECONDS)
         #--- Instrument Status Print ---
         brain.screen.clear_screen()
         #Headers
+        bprint(1,"--MOTORS--")
         bprint(1,"Temp. |", 13)
         bprint(1,"Pos. |", 20 )
         bprint(1,"Torque |",27)
@@ -311,9 +322,10 @@ def driverControl():
         bprint(6,"ShooterA :")
         bprint(7,"ShooterB :")
         bprint(8,"In./Spin :")
-        bprint(9, "RearDistance")
-        bprint(10, "LeftDistance:")
-        bprint(11, "RightDistance:")       
+        bprint(9,"--DISTANCE--")
+        bprint(10, "RearDistance")
+        bprint(11, "LeftDistance:")
+        bprint(12, "RightDistance:")       
 
         #Temperature
         bprint(2,str(left_motor_a.temperature(PERCENT))+"%", 13)
@@ -351,20 +363,10 @@ def driverControl():
         bprint(7,str(round(shooterB.efficiency(PERCENT)))+"%", 37)
         bprint(8,str(round(spinner.efficiency(PERCENT)))+"%", 37)   
     
-        
-
-
-        #--- Instrument Status Print Over ---    
-
-
-
-
-
-    
-
 
             
 def drivetrainControl():
+    print("Drivetrain Control Loop succesfully ran")
     while True:
         left_speed = controller_1.axis3.position()
         right_speed = controller_1.axis2.position()
