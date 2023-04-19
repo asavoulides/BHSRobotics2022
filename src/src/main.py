@@ -228,6 +228,7 @@ def pid(expected,d_velocity=100):
 s_velocity = 75
 
 def driverControl():
+    print("DriverControl")
     global s_velocity
 
     controller_1.screen.clear_screen()
@@ -302,7 +303,7 @@ def driverControl():
 
         #--- Instrument Status Print Over ---    
 def userFeedback():
-    print("UserFeedback Loop Succesfully Ran")
+    print("UserFeedback Loop Succesful")
     while True:
         wait(160,MSEC)
         #--- Instrument Status Print ---
@@ -328,13 +329,13 @@ def userFeedback():
         bprint(12, "RightDistance:")       
 
         #Temperature
-        bprint(2,str(left_motor_a.temperature(PERCENT))+"%", 13)
-        bprint(3,str(left_motor_b.temperature(PERCENT))+"%", 13)
-        bprint(4,str(right_motor_a.temperature(PERCENT))+"%", 13)
-        bprint(5,str(right_motor_a.temperature(PERCENT))+"%", 13)
-        bprint(6,str(shooterA.temperature(PERCENT))+"%", 13)
-        bprint(7,str(shooterB.temperature(PERCENT))+"%", 13)
-        bprint(8,str(spinner.temperature(PERCENT))+"%", 13)
+        bprint(2,str(left_motor_a.temperature(PERCENT))+ "%", 13)
+        bprint(3,str(left_motor_b.temperature(PERCENT)) + "%", 13)
+        bprint(4,str(right_motor_a.temperature(PERCENT)) + "%", 13)
+        bprint(5,str(right_motor_a.temperature(PERCENT)) + "%", 13)
+        bprint(6,str(shooterA.temperature(PERCENT)) + "%", 13)
+        bprint(7,str(shooterB.temperature(PERCENT)) + "%", 13)
+        bprint(8,str(spinner.temperature(PERCENT)) + "％", 13)
 
         #Position
         bprint(2,str(round(left_motor_a.position(DEGREES))), 20)
@@ -344,24 +345,24 @@ def userFeedback():
         bprint(6,str(round(shooterA.position(DEGREES))), 20)
         bprint(7,str(round(shooterB.position(DEGREES))), 20)
         bprint(8,str(round(spinner.position(DEGREES))), 20)
-
+        
         #Torque
-        bprint(2,str(round(left_motor_a.torque(TorqueUnits.NM)))+"NM", 27)
-        bprint(3,str(round(left_motor_b.torque(TorqueUnits.NM)))+"NM", 27)
-        bprint(4,str(round(right_motor_a.torque(TorqueUnits.NM)))+"NM", 27)
-        bprint(5,str(round(right_motor_a.torque(TorqueUnits.NM)))+"NM", 27)
-        bprint(6,str(round(shooterA.torque(TorqueUnits.NM)))+"NM", 27)
-        bprint(7,str(round(shooterB.torque(TorqueUnits.NM)))+"NM", 27)
-        bprint(8,str(round(spinner.torque(TorqueUnits.NM)))+"NM", 27)
+        bprint(2,str(round(left_motor_a.torque(TorqueUnits.NM))) + "NM", 27)
+        bprint(3,str(round(left_motor_b.torque(TorqueUnits.NM))) + "NM", 27)
+        bprint(4,str(round(right_motor_a.torque(TorqueUnits.NM))) + "NM", 27)
+        bprint(5,str(round(right_motor_a.torque(TorqueUnits.NM))) + "NM", 27)
+        bprint(6,str(round(shooterA.torque(TorqueUnits.NM))) + "NM", 27)
+        bprint(7,str(round(shooterB.torque(TorqueUnits.NM))) + "NM", 27)
+        bprint(8,str(round(spinner.torque(TorqueUnits.NM))) + "NM", 27)
 
         #Efficency
-        bprint(2,str(round(left_motor_a.efficiency(PERCENT)))+"%", 37)
-        bprint(3,str(round(left_motor_b.efficiency(PERCENT)))+"%", 37)
-        bprint(4,str(round(right_motor_a.efficiency(PERCENT)))+"%", 37)
-        bprint(5,str(round(right_motor_a.efficiency(PERCENT)))+"%", 37)
-        bprint(6,str(round(shooterA.efficiency(PERCENT)))+"%", 37)
-        bprint(7,str(round(shooterB.efficiency(PERCENT)))+"%", 37)
-        bprint(8,str(round(spinner.efficiency(PERCENT)))+"%", 37)   
+        bprint(2, str(round(left_motor_a.efficiency(PERCENT))) + "/100", 37)
+        bprint(3, str(round(left_motor_b.efficiency(PERCENT))) + "/100", 37)
+        bprint(4, str(round(right_motor_a.efficiency(PERCENT))) + "/100", 37)
+        bprint(5, str(round(right_motor_b.efficiency(PERCENT))) + "/100", 37)
+        bprint(6, str(round(shooterA.efficiency(PERCENT))) + "/100", 37)
+        bprint(7, str(round(shooterB.efficiency(PERCENT))) + "/100", 37)
+        bprint(8, str(round(spinner.efficiency(PERCENT))) + "/100", 37)
         
         #---Distance---
         bprint(9,"MM",25)
@@ -372,7 +373,7 @@ def userFeedback():
 
             
 def drivetrainControl():
-    print("Drivetrain Control Loop succesfully ran")
+    print("Drivetrain Control Loop Succesfull")
     while True:
         left_speed = controller_1.axis3.position()
         right_speed = controller_1.axis2.position()
