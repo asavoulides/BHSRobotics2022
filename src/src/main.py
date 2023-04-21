@@ -179,7 +179,7 @@ def autonomous_skills():
     expansion.set(False)
     controller_1.screen.clear_screen()
     spinner.stop()
-
+    
 #----------------PID----------------
 
 def pid(expected,d_velocity=100):
@@ -235,6 +235,8 @@ def driverControl():
     #Creating Threads to maximize efficency
     DrivetrainControl = Thread(drivetrainControl)
     InstrumentStatus = Thread(instrumentStatus)
+    UserFeedback = Thread(userFeedback)
+    ConsoleFeedback = Thread(consoleFeedback)
 
     while True: 
         shooter.set_velocity(s_velocity,PERCENT)
@@ -278,13 +280,17 @@ def driverControl():
 
 
         
+def consoleFeedback():
+    while True:
+        print("Rear Distance: "+ str(rear_distance.object_distance(MM)))
+        print("Front Distance: "+ str(front_distance.distance(MM)))
+        print("Right Distnace " + str(right_distance.distance(MM)))
+        print("Left Distance: " +str(left_distance.distance(MM)))
 
-
-        #--- Instrument Status Print Over ---    
 def instrumentStatus():
     print("User Feedback Loop Ran Succesful")
     while True:
-        wait(160,MSEC)
+        wait(60,MSEC)
         #--- Instrument Status Print ---
         brain.screen.clear_screen()
         #Headers
@@ -302,10 +308,11 @@ def instrumentStatus():
         bprint(6,"ShooterA :")
         bprint(7,"ShooterB :")
         bprint(8,"In./Spin :")
-        bprint(9,"--DISTANCE Sensors--")
-        bprint(10, "RearDistance")
-        bprint(11, "LeftDistance:")
-        bprint(12, "RightDistance:")       
+        #bprint(9,"--DISTANCE Sensors--")
+        bprint(9, "Left Distance")
+        bprint(10, "Right Distance")
+        bprint(11, "Front Distance:")
+        bprint(12, "Rear Distance:")       
 
         #Temperature
         bprint(2,str(left_motor_a.temperature(PERCENT))+"%", 13)
@@ -326,13 +333,13 @@ def instrumentStatus():
         bprint(8,str(round(spinner.position(DEGREES))), 20)
 
         #Torque
-        bprint(2,str(round(left_motor_a.torque(TorqueUnits.NM)))+"NM", 27)
-        bprint(3,str(round(left_motor_b.torque(TorqueUnits.NM)))+"NM", 27)
-        bprint(4,str(round(right_motor_a.torque(TorqueUnits.NM)))+"NM", 27)
-        bprint(5,str(round(right_motor_a.torque(TorqueUnits.NM)))+"NM", 27)
-        bprint(6,str(round(shooterA.torque(TorqueUnits.NM)))+"NM", 27)
-        bprint(7,str(round(shooterB.torque(TorqueUnits.NM)))+"NM", 27)
-        bprint(8,str(round(spinner.torque(TorqueUnits.NM)))+"NM", 27)
+        bprint(2,str(round(left_motor_a.torque(TorqueUnits.INLB)))+"INLB", 27)
+        bprint(3,str(round(left_motor_b.torque(TorqueUnits.INLB)))+"INLB", 27)
+        bprint(4,str(round(right_motor_a.torque(TorqueUnits.INLB)))+"INLB", 27)
+        bprint(5,str(round(right_motor_a.torque(TorqueUnits.INLB)))+"INLB", 27)
+        bprint(6,str(round(shooterA.torque(TorqueUnits.INLB)))+"INLB", 27)
+        bprint(7,str(round(shooterB.torque(TorqueUnits.INLB)))+"INLB", 27)
+        bprint(8,str(round(spinner.torque(TorqueUnits.INLB)))+"INLB", 27)
 
         #Efficency
         bprint(2,str(round(left_motor_a.efficiency(PERCENT)))+"%", 37)
@@ -344,34 +351,38 @@ def instrumentStatus():
         bprint(8,str(round(spinner.efficiency(PERCENT)))+"%", 37)   
         
         #---Distance---
-        bprint(9,"MM",25)
-        bprint(10, str(rear_distance.object_distance(MM))+'mm',25)
-        bprint(11, str(left_distance.distance(MM))+'mm',25)
-        bprint(12, str(right_distance.distance(MM))+'mm',25)
+        bprint(9, str(left_distance.distance(MM))+'mm',25)
+        bprint(10,str(right_distance.distance(MM))+'mm',25)
+        bprint(11, str(front_distance.distance(MM))+'mm',25)
+        bprint(12, str(rear_distance.object_distance(MM))+'mm',25)
+
+
 
 
 def userFeedback():
-        wait(160,MSEC)
-        time_left = 105 - round(brain.timer.time(SECONDS))
+        while True:
+            print("UserFeedback Successful")
+            wait(160,MSEC)
+            time_left = 105 - round(brain.timer.time(SECONDS))
+            
+            if time_left > 0:
+                f_time = (105 - round(brain.timer.time(SECONDS)))
 
-        if time_left > 0:
-            f_time = (105 - round(brain.timer.time(SECONDS)))
+            else:
+                f_time = round(brain.timer.time(SECONDS))
 
-        else:
-            f_time = round(brain.timer.time(SECONDS))
+            if f_time < 10 and f_time > 0: 
+                #rumble("---") #Calls rumble function which vibrates said 
+                cprint(2,"Press B for Expansion")
 
-        if f_time < 10 and f_time > 0: 
-            #rumble("---") #Calls rumble function which vibrates said 
-            cprint(2,"Press B for Expansion")
-
-        cprint(3, "Time: "+str(f_time)+"s")
-        #--- Time Function Over ---
-        #--- Expansion Launch ---
-        if (controller_1.buttonB.pressing() and f_time < 10 and f_time > 0):
-            expansion.set(True)
-            rumble("-")
-            wait(5,SECONDS)
-            expansion.set(False)
+            cprint(3, "Time: "+str(f_time)+"s")
+             #--- Time Function Over ---
+             #--- Expansion Launch ---
+            if (controller_1.buttonB.pressing() and f_time < 10 and f_time > 0):
+                expansion.set(True)
+                rumble("-")
+                wait(5,SECONDS)
+                expansion.set(False)
 
     
             
@@ -386,6 +397,7 @@ def drivetrainControl():
 
         right_drive_smart.set_velocity(right_speed, PERCENT)
         right_drive_smart.spin(FORWARD)
+
 
 
 
