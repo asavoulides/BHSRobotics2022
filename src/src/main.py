@@ -229,15 +229,13 @@ s_velocity = 75
 
 def driverControl():
     global s_velocity
-
     controller_1.screen.clear_screen()
 
     #Creating Threads to maximize efficency
     DrivetrainControl = Thread(drivetrainControl)
     InstrumentStatus = Thread(instrumentStatus)
     UserFeedback = Thread(userFeedback)
-    ConsoleFeedback = Thread(consoleFeedback)
-
+    cprint(1, 'Shooter: Veloc: '+str(s_velocity)+'%')
     while True: 
         shooter.set_velocity(s_velocity,PERCENT)
         #Shooter Spin Forward
@@ -280,12 +278,7 @@ def driverControl():
 
 
         
-def consoleFeedback():
-    while True:
-        print("Rear Distance: "+ str(rear_distance.object_distance(MM)))
-        print("Front Distance: "+ str(front_distance.distance(MM)))
-        print("Right Distnace " + str(right_distance.distance(MM)))
-        print("Left Distance: " +str(left_distance.distance(MM)))
+
 
 def instrumentStatus():
     print("User Feedback Loop Ran Succesful")
@@ -360,29 +353,28 @@ def instrumentStatus():
 
 
 def userFeedback():
-        while True:
-            print("UserFeedback Successful")
-            wait(160,MSEC)
-            time_left = 105 - round(brain.timer.time(SECONDS))
+    print("UserFeedback Successful")
+    while True:
+        wait(600,MSEC)
+        time_left = 105 - round(brain.timer.time(SECONDS))
             
-            if time_left > 0:
-                f_time = (105 - round(brain.timer.time(SECONDS)))
+        if time_left > 0:
+            f_time = (105 - round(brain.timer.time(SECONDS)))
 
-            else:
-                f_time = round(brain.timer.time(SECONDS))
+        else:
+            f_time = round(brain.timer.time(SECONDS))
 
-            if f_time < 10 and f_time > 0: 
-                #rumble("---") #Calls rumble function which vibrates said 
-                cprint(2,"Press B for Expansion")
+        if f_time < 10 and f_time > 0: 
+            cprint(2,"Press B for Expansion")
 
-            cprint(3, "Time: "+str(f_time)+"s")
-             #--- Time Function Over ---
-             #--- Expansion Launch ---
-            if (controller_1.buttonB.pressing() and f_time < 10 and f_time > 0):
-                expansion.set(True)
-                rumble("-")
-                wait(5,SECONDS)
-                expansion.set(False)
+        cprint(3, "Time: "+str(f_time)+"s")
+
+        if (controller_1.buttonB.pressing() and f_time < 10 and f_time > 0):
+            expansion.set(True)
+            rumble("-")
+            wait(5,SECONDS)
+            expansion.set(False)
+
 
     
             
