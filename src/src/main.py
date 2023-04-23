@@ -392,9 +392,8 @@ def drivetrainControl():
 
 
 
-
-
 #--Competition Template--
 
 comp = Competition(driverControl, autonomous_short)
 preAutonomous()
+
