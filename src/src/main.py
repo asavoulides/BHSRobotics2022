@@ -19,7 +19,8 @@ drivetrain_inertial = Inertial(Ports.PORT15)
 #Drivetrain Declaration
 drivetrain = SmartDrive(left_drive_smart, right_drive_smart, drivetrain_inertial, 319.19, 320, 40, MM, 1)
 controller_1 = Controller(PRIMARY)
-spinner = Motor(Ports.PORT7, GearSetting.RATIO_18_1, False)
+intake = Motor(Ports.PORT7, GearSetting.RATIO_18_1, False)
+spinner = Motor(Ports.PORT10, GearSetting.RATIO_6_1, False)
 shooterA = Motor(Ports.PORT12, GearSetting.RATIO_6_1) #13 forward
 shooterB = Motor(Ports.PORT13, GearSetting.RATIO_6_1, True) #14 reverse
 shooter = MotorGroup(shooterA, shooterB)
@@ -31,7 +32,7 @@ rear_distance = Distance(Ports.PORT20)
 front_distance = Sonar(brain.three_wire_port.e)
 left_distance = Sonar(brain.three_wire_port.c)
 right_distance = Sonar(brain.three_wire_port.a)
-wait(30, MSEC)
+
 
 spinner_for: int = 100
 
@@ -60,8 +61,8 @@ def bprint(row,text,column=1):
 
 #shooter Shooting Function
 def disk_launch(percent, times):
-    spinner.set_velocity(100, PERCENT)
-    spinner.spin(FORWARD)
+    intake.set_velocity(100, PERCENT)
+    intake.spin(FORWARD)
     for i in range(times):
         shooter.set_velocity(percent,PERCENT)
         shooter.spin(FORWARD)
@@ -70,7 +71,7 @@ def disk_launch(percent, times):
         wait(200,MSEC)
         pusher.set(True)
     shooter.stop()
-    spinner.stop()
+    intake.stop()
 
 def preAutonomous():
     calibrate_drivetrain()
@@ -84,7 +85,7 @@ def autonomous_short():
     #Terminating reverse functions
     drivetrain.stop()
     #Rotating Spinner
-    spinner.spin_for(REVERSE,spinner_for,DEGREES)
+    intake.spin_for(REVERSE,spinner_for,DEGREES)
     #Driving Forward for Launch
     drivetrain.drive_for(FORWARD,50,MM)
     pid(90)
@@ -109,10 +110,10 @@ def autonomous_long():
     #Reversing to roller until the switch contact sensor detects contact
     while rear_distance.object_distance(MM) > 70: 
         drivetrain.drive(REVERSE)
-    #updating spinner status
+    #updating intake status
     cprint(1,'Rotating Spinner')
-    #spinning spinner for 10 degrees
-    spinner.spin_for(REVERSE,spinner_for,DEGREES)
+    #spinning intake for 10 degrees
+    intake.spin_for(REVERSE,spinner_for,DEGREES)
     drivetrain.stop()
     controller_1.screen.clear_screen()
       
@@ -121,15 +122,15 @@ def autonomous_skills():
     global spinner_for
 
     pusher.set(True)
-    spinner.set_velocity(100,PERCENT)
-    spinner.spin(FORWARD)
+    intake.set_velocity(100,PERCENT)
+    intake.spin(FORWARD)
     #Updating Velocities
     drivetrain.set_stopping(COAST)
     drivetrain.set_drive_velocity(60,PERCENT)
     #Reversing into Spinner #1
     while rear_distance.object_distance(MM) > 70: 
         drivetrain.drive(REVERSE)
-    spinner.spin_for(FORWARD,spinner_for,DEGREES)
+    intake.spin_for(FORWARD,spinner_for,DEGREES)
     drivetrain.stop()
     #Going Forwards; preparing to pid into Spinner #2
     while rear_distance.object_distance(MM) < 300:
@@ -140,7 +141,7 @@ def autonomous_skills():
     while rear_distance.object_distance(MM) > 70:
         drivetrain.drive(REVERSE)
     #Spinner Spinning #2
-    spinner.spin_for(FORWARD,spinner_for,DEGREES)
+    intake.spin_for(FORWARD,spinner_for,DEGREES)
     drivetrain.stop()
     wait(1,SECONDS)
     #Going towards Middle
@@ -149,7 +150,7 @@ def autonomous_skills():
     drivetrain.stop()
     pid(17,70)
     disk_launch(75,3)
-    spinner.spin(FORWARD)
+    intake.spin(FORWARD)
     pid(73,70)
     #At Middle
     while rear_distance.object_distance(MM) > 700 or not(rear_distance.is_object_detected()):
@@ -160,7 +161,7 @@ def autonomous_skills():
     while rear_distance.object_distance(MM) > 65: 
         drivetrain.drive(REVERSE)
     drivetrain.set_drive_velocity(50,PERCENT)
-    spinner.spin_for(FORWARD,spinner_for,DEGREES)
+    intake.spin_for(FORWARD,spinner_for,DEGREES)
     drivetrain.stop()
     drivetrain.set_drive_velocity(70,PERCENT)
     #Going to Spinner #4
@@ -170,7 +171,7 @@ def autonomous_skills():
     pid(-90,70)
     while rear_distance.object_distance(MM) > 70: 
         drivetrain.drive(REVERSE)
-    spinner.spin_for(FORWARD,spinner_for,DEGREES)
+    intake.spin_for(FORWARD,spinner_for,DEGREES)
     drivetrain.stop()
     drivetrain.drive_for(FORWARD,5,INCHES)
     pid(45)
@@ -178,7 +179,7 @@ def autonomous_skills():
     wait(5,SECONDS)
     expansion.set(False)
     controller_1.screen.clear_screen()
-    spinner.stop()
+    intake.stop()
     
 #----------------PID----------------
 
@@ -263,17 +264,25 @@ def driverControl():
             cprint(1, 'Shooter: Veloc: '+str(s_velocity)+ '%')
             rumble(".")
         if controller_1.buttonR1.pressing(): 
-            spinner.set_velocity(100, PERCENT)
-            spinner.spin(FORWARD)
+            intake.set_velocity(100, PERCENT)
+            intake.spin(FORWARD)
         elif controller_1.buttonR2.pressing():
-            spinner.set_velocity(-100, PERCENT)
-            spinner.spin(FORWARD)
+            intake.set_velocity(-100, PERCENT)
+            intake.spin(FORWARD)
         else:
-            spinner.set_velocity(0, PERCENT)
+            intake.set_velocity(0, PERCENT)
         if controller_1.buttonDown.pressing():
             pusher.set(False)
         else:
             pusher.set(True)
+        if controller_1.buttonLeft.pressing():
+            spinner.set_velocity(100,PERCENT)
+            spinner.spin(FORWARD)
+        elif controller_1.buttonRight.pressing():
+            spinner.set_velocity(100,PERCENT)
+            spinner.spin(REVERSE)
+        else:
+            spinner.stop()
 
 
 
@@ -314,7 +323,7 @@ def instrumentStatus():
         bprint(5,str(right_motor_a.temperature(PERCENT))+"%", 13)
         bprint(6,str(shooterA.temperature(PERCENT))+"%", 13)
         bprint(7,str(shooterB.temperature(PERCENT))+"%", 13)
-        bprint(8,str(spinner.temperature(PERCENT))+"%", 13)
+        bprint(8,str(intake.temperature(PERCENT))+"%", 13)
 
         #Position
         bprint(2,str(round(left_motor_a.position(DEGREES))), 20)
@@ -323,7 +332,7 @@ def instrumentStatus():
         bprint(5,str(round(right_motor_a.position(DEGREES))), 20)
         bprint(6,str(round(shooterA.position(DEGREES))), 20)
         bprint(7,str(round(shooterB.position(DEGREES))), 20)
-        bprint(8,str(round(spinner.position(DEGREES))), 20)
+        bprint(8,str(round(intake.position(DEGREES))), 20)
 
         #Torque
         bprint(2,str(round(left_motor_a.torque(TorqueUnits.INLB)))+"INLB", 27)
@@ -332,7 +341,7 @@ def instrumentStatus():
         bprint(5,str(round(right_motor_a.torque(TorqueUnits.INLB)))+"INLB", 27)
         bprint(6,str(round(shooterA.torque(TorqueUnits.INLB)))+"INLB", 27)
         bprint(7,str(round(shooterB.torque(TorqueUnits.INLB)))+"INLB", 27)
-        bprint(8,str(round(spinner.torque(TorqueUnits.INLB)))+"INLB", 27)
+        bprint(8,str(round(intake.torque(TorqueUnits.INLB)))+"INLB", 27)
 
         #Efficency
         bprint(2,str(round(left_motor_a.efficiency(PERCENT)))+"%", 37)
@@ -341,7 +350,7 @@ def instrumentStatus():
         bprint(5,str(round(right_motor_a.efficiency(PERCENT)))+"%", 37)
         bprint(6,str(round(shooterA.efficiency(PERCENT)))+"%", 37)
         bprint(7,str(round(shooterB.efficiency(PERCENT)))+"%", 37)
-        bprint(8,str(round(spinner.efficiency(PERCENT)))+"%", 37)   
+        bprint(8,str(round(intake.efficiency(PERCENT)))+"%", 37)   
         
         #---Distance---
         bprint(9, str(left_distance.distance(MM))+'mm',25)
