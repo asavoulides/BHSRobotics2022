@@ -292,7 +292,7 @@ def driverControl():
 def instrumentStatus():
     print("User Feedback Loop Ran Succesful")
     while True:
-        wait(60,MSEC)
+        wait(500,MSEC)
         #--- Instrument Status Print ---
         brain.screen.clear_screen()
         #Headers
