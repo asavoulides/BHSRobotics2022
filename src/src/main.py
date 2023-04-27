@@ -347,7 +347,7 @@ def instrumentStatus():
         bprint(4,str(round(shooterA.efficiency(PERCENT)))+"%", 37)
         bprint(5,str(round(shooterB.efficiency(PERCENT)))+"%", 37)
         bprint(6,str(round(intake.efficiency(PERCENT)))+"%", 37)   
-        
+
         #---Distance---
         bprint(8, str(left_distance.distance(MM))+'mm',25)
         bprint(9,str(right_distance.distance(MM))+'mm',25)
@@ -379,6 +379,7 @@ def userFeedback():
             rumble("-")
             wait(5,SECONDS)
             expansion.set(False)
+
 
 
     
