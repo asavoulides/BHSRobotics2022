@@ -6,27 +6,26 @@ brain=Brain()
 # Robot configuration code
 #Left Drivetrain
 left_motor_a = Motor(Ports.PORT1, GearSetting.RATIO_18_1, False)
-left_motor_b = Motor(Ports.PORT3, GearSetting.RATIO_18_1, False)
+left_motor_b = Motor(Ports.PORT2, GearSetting.RATIO_18_1, False)
 #Left Group
 left_drive_smart = MotorGroup(left_motor_a, left_motor_b)
 #Right Drivetrain
-right_motor_a = Motor(Ports.PORT4, GearSetting.RATIO_18_1, True)
-right_motor_b = Motor(Ports.PORT6, GearSetting.RATIO_18_1, True)
+right_motor_a = Motor(Ports.PORT3, GearSetting.RATIO_18_1, True)
+right_motor_b = Motor(Ports.PORT4, GearSetting.RATIO_18_1, True)
 #Right Group
 right_drive_smart = MotorGroup(right_motor_a,right_motor_b)
 #Inertial
-drivetrain_inertial = Inertial(Ports.PORT15)
+drivetrain_inertial = Inertial(Ports.PORT7)
 #Drivetrain Declaration
 drivetrain = SmartDrive(left_drive_smart, right_drive_smart, drivetrain_inertial, 319.19, 320, 40, MM, 1)
 controller_1 = Controller(PRIMARY)
-intake = Motor(Ports.PORT7, GearSetting.RATIO_18_1, False)
-spinner = Motor(Ports.PORT10, GearSetting.RATIO_6_1, False)
-shooterA = Motor(Ports.PORT12, GearSetting.RATIO_6_1) #13 forward
-shooterB = Motor(Ports.PORT13, GearSetting.RATIO_6_1, True) #14 reverse
+intake = Motor(Ports.PORT5, GearSetting.RATIO_18_1, False)
+spinner = Motor(Ports.PORT6, GearSetting.RATIO_6_1, False)
+shooterA = Motor(Ports.PORT11, GearSetting.RATIO_6_1) #13 forward
+shooterB = Motor(Ports.PORT12, GearSetting.RATIO_6_1,True) #14 reverse
 shooter = MotorGroup(shooterA, shooterB)
 #Phnumatics
-pusher = DigitalOut(brain.three_wire_port.a)
-expansion = DigitalOut(brain.three_wire_port.b)
+expansion = DigitalOut(brain.three_wire_port.h)
 # wait for rotation sensor to fully initialize
 rear_distance = Distance(Ports.PORT20)
 front_distance = Sonar(brain.three_wire_port.e)
@@ -67,9 +66,10 @@ def disk_launch(percent, times):
         shooter.set_velocity(percent,PERCENT)
         shooter.spin(FORWARD)
         wait(3,SECONDS)
-        pusher.set(False)
-        wait(200,MSEC)
-        pusher.set(True)
+        intake.spin(REVERSE)
+        wait(1,SECONDS)
+        intake.stop()   
+
     shooter.stop()
     intake.stop()
 
@@ -121,7 +121,6 @@ def autonomous_long():
 def autonomous_skills():
     global spinner_for
 
-    pusher.set(True)
     intake.set_velocity(100,PERCENT)
     intake.spin(FORWARD)
     #Updating Velocities
@@ -180,7 +179,7 @@ def autonomous_skills():
     expansion.set(False)
     controller_1.screen.clear_screen()
     intake.stop()
-    
+
 #----------------PID----------------
 
 def pid(expected,d_velocity=100):
@@ -271,10 +270,7 @@ def driverControl():
             intake.spin(FORWARD)
         else:
             intake.set_velocity(0, PERCENT)
-        if controller_1.buttonDown.pressing():
-            pusher.set(False)
-        else:
-            pusher.set(True)
+
         if controller_1.buttonLeft.pressing():
             spinner.set_velocity(100,PERCENT)
             spinner.spin(FORWARD)
@@ -292,7 +288,7 @@ def driverControl():
 def instrumentStatus():
     print("User Feedback Loop Ran Succesful")
     while True:
-        wait(500,MSEC)
+        wait(60,MSEC)
         #--- Instrument Status Print ---
         brain.screen.clear_screen()
         #Headers
@@ -301,6 +297,7 @@ def instrumentStatus():
         bprint(1,"Pos. |", 20 )
         bprint(1,"Torque |",27)
         bprint(1,"Eff. |",37)
+        bprint(1, "Port",44)
 
         #Column #1
         bprint(2,"Drive L : ")
@@ -308,11 +305,13 @@ def instrumentStatus():
         bprint(4,"ShooterA :")
         bprint(5,"ShooterB :")
         bprint(6,"Intake :")
-        bprint(7,"--DISTANCE Sensors--")
-        bprint(8, "Left Distance")
-        bprint(9, "Right Distance")
-        bprint(10, "Front Distance:")
-        bprint(11, "Rear Distance:")       
+        bprint(7, "Spinner: ")
+        bprint(8,"--DISTANCE Sensors--")
+        bprint(8, "Distance |",25)
+        bprint(9, "Left Distance")
+        bprint(10, "Right Distance")
+        bprint(11, "Front Distance:")
+        bprint(12, "Rear Distance:")       
 
         #Temperature
         left_group_temp = (left_motor_a.temperature(PERCENT) + (left_motor_b.temperature(PERCENT)))/2
@@ -322,6 +321,7 @@ def instrumentStatus():
         bprint(4,str(shooterA.temperature(PERCENT))+"%", 13)
         bprint(5,str(shooterB.temperature(PERCENT))+"%", 13)
         bprint(6,str(intake.temperature(PERCENT))+"%", 13)
+        bprint(7,str(spinner.temperature(PERCENT))+"%", 13)
 
         #Position
         bprint(2, "N/A",20)
@@ -329,6 +329,7 @@ def instrumentStatus():
         bprint(4,str(round(shooterA.position(DEGREES))), 20)
         bprint(5,str(round(shooterB.position(DEGREES))), 20)
         bprint(6,str(round(intake.position(DEGREES))), 20)
+        bprint(7,str(round(spinner.position(DEGREES))), 20)
 
         #Torque
         left_group_torque = (left_motor_a.torque(TorqueUnits.INLB) + left_motor_b.torque(TorqueUnits.INLB)) /2
@@ -338,6 +339,7 @@ def instrumentStatus():
         bprint(4,str(round(shooterA.torque(TorqueUnits.INLB)))+"INLB", 27)
         bprint(5,str(round(shooterB.torque(TorqueUnits.INLB)))+"INLB", 27)
         bprint(6,str(round(intake.torque(TorqueUnits.INLB)))+"INLB", 27)
+        bprint(7,str(round(spinner.torque(TorqueUnits.INLB)))+"INLB", 27)
 
         #Efficency
         left_group_eff = (left_motor_a.efficiency(PERCENT) + left_motor_b.efficiency(PERCENT))/2
@@ -347,12 +349,27 @@ def instrumentStatus():
         bprint(4,str(round(shooterA.efficiency(PERCENT)))+"%", 37)
         bprint(5,str(round(shooterB.efficiency(PERCENT)))+"%", 37)
         bprint(6,str(round(intake.efficiency(PERCENT)))+"%", 37)   
+        bprint(7,str(round(spinner.efficiency(PERCENT)))+"%", 37)   
+
+
+        #---Port---
+        bprint(2,"1,2",44)
+        bprint(3, "3,4",44)
+        bprint(4, "11",44)
+        bprint(5, "12",44)
+        bprint(6,"5",44)
+        bprint(7,"6",44)
+        #---Distance Port---
+        bprint(9,"C/E",44)
+        bprint(10,"A/B",44)
+        bprint(11,"E/F",44)
+        bprint(12,"20",44)
 
         #---Distance---
-        bprint(8, str(left_distance.distance(MM))+'mm',25)
-        bprint(9,str(right_distance.distance(MM))+'mm',25)
-        bprint(10, str(front_distance.distance(MM))+'mm',25)
-        bprint(11, str(rear_distance.object_distance(MM))+'mm',25)
+        bprint(9, str(left_distance.distance(MM))+'mm',25)
+        bprint(10,str(right_distance.distance(MM))+'mm',25)
+        bprint(11, str(front_distance.distance(MM))+'mm',25)
+        bprint(12, str(rear_distance.object_distance(MM))+'mm',25)
 
 
 
@@ -371,10 +388,11 @@ def userFeedback():
 
         if f_time < 10 and f_time > 0: 
             cprint(2,"Press B for Expansion")
+            rumble("--")
 
         cprint(3, "Time: "+str(f_time)+"s")
 
-        if (controller_1.buttonB.pressing() and f_time < 10 and f_time > 0):
+        if (controller_1.buttonB.pressing()): #and f_time < 10 and f_time > 0):
             expansion.set(True)
             rumble("-")
             wait(5,SECONDS)
@@ -385,7 +403,7 @@ def userFeedback():
     
             
 def drivetrainControl():
-    print("Drivetrain Control Loop succesfully ran")
+    print("Drivetrain Control Loop Succesful")
     while True:
         left_speed = controller_1.axis3.position()
         right_speed = controller_1.axis2.position()
