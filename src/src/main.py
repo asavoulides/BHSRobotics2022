@@ -303,60 +303,56 @@ def instrumentStatus():
         bprint(1,"Eff. |",37)
 
         #Column #1
-        bprint(2,"LeftA : ")
-        bprint(3,"LeftB : ")
-        bprint(4,"RightA :")
-        bprint(5,"RightB :")
-        bprint(6,"ShooterA :")
-        bprint(7,"ShooterB :")
-        bprint(8,"In./Spin :")
-        #bprint(9,"--DISTANCE Sensors--")
-        bprint(9, "Left Distance")
-        bprint(10, "Right Distance")
-        bprint(11, "Front Distance:")
-        bprint(12, "Rear Distance:")       
+        bprint(2,"Drive L : ")
+        bprint(3,"Drive R : ")
+        bprint(4,"ShooterA :")
+        bprint(5,"ShooterB :")
+        bprint(6,"Intake :")
+        bprint(7,"--DISTANCE Sensors--")
+        bprint(8, "Left Distance")
+        bprint(9, "Right Distance")
+        bprint(10, "Front Distance:")
+        bprint(11, "Rear Distance:")       
 
         #Temperature
-        bprint(2,str(left_motor_a.temperature(PERCENT))+"%", 13)
-        bprint(3,str(left_motor_b.temperature(PERCENT))+"%", 13)
-        bprint(4,str(right_motor_a.temperature(PERCENT))+"%", 13)
-        bprint(5,str(right_motor_a.temperature(PERCENT))+"%", 13)
-        bprint(6,str(shooterA.temperature(PERCENT))+"%", 13)
-        bprint(7,str(shooterB.temperature(PERCENT))+"%", 13)
-        bprint(8,str(intake.temperature(PERCENT))+"%", 13)
+        left_group_temp = (left_motor_a.temperature(PERCENT) + (left_motor_b.temperature(PERCENT)))/2
+        right_group_temp = (right_motor_a.temperature(PERCENT) + (right_motor_b.temperature(PERCENT)))/2
+        bprint(2,str(left_group_temp)+"%", 13)
+        bprint(3,str(right_group_temp)+"%", 13)
+        bprint(4,str(shooterA.temperature(PERCENT))+"%", 13)
+        bprint(5,str(shooterB.temperature(PERCENT))+"%", 13)
+        bprint(6,str(intake.temperature(PERCENT))+"%", 13)
 
         #Position
-        bprint(2,str(round(left_motor_a.position(DEGREES))), 20)
-        bprint(3,str(round(left_motor_b.position(DEGREES))), 20)
-        bprint(4,str(round(right_motor_a.position(DEGREES))), 20)
-        bprint(5,str(round(right_motor_a.position(DEGREES))), 20)
-        bprint(6,str(round(shooterA.position(DEGREES))), 20)
-        bprint(7,str(round(shooterB.position(DEGREES))), 20)
-        bprint(8,str(round(intake.position(DEGREES))), 20)
+        bprint(2, "N/A",20)
+        bprint(3, "N/A",20)
+        bprint(4,str(round(shooterA.position(DEGREES))), 20)
+        bprint(5,str(round(shooterB.position(DEGREES))), 20)
+        bprint(6,str(round(intake.position(DEGREES))), 20)
 
         #Torque
-        bprint(2,str(round(left_motor_a.torque(TorqueUnits.INLB)))+"INLB", 27)
-        bprint(3,str(round(left_motor_b.torque(TorqueUnits.INLB)))+"INLB", 27)
-        bprint(4,str(round(right_motor_a.torque(TorqueUnits.INLB)))+"INLB", 27)
-        bprint(5,str(round(right_motor_a.torque(TorqueUnits.INLB)))+"INLB", 27)
-        bprint(6,str(round(shooterA.torque(TorqueUnits.INLB)))+"INLB", 27)
-        bprint(7,str(round(shooterB.torque(TorqueUnits.INLB)))+"INLB", 27)
-        bprint(8,str(round(intake.torque(TorqueUnits.INLB)))+"INLB", 27)
+        left_group_torque = (left_motor_a.torque(TorqueUnits.INLB) + left_motor_b.torque(TorqueUnits.INLB)) /2
+        right_group_torque = (right_motor_a.torque(TorqueUnits.INLB) + right_motor_b.torque(TorqueUnits.INLB)) /2
+        bprint(2,str(round(left_group_torque))+"INLB", 27)
+        bprint(3,str(round(right_group_torque))+"INLB", 27)
+        bprint(4,str(round(shooterA.torque(TorqueUnits.INLB)))+"INLB", 27)
+        bprint(5,str(round(shooterB.torque(TorqueUnits.INLB)))+"INLB", 27)
+        bprint(6,str(round(intake.torque(TorqueUnits.INLB)))+"INLB", 27)
 
         #Efficency
-        bprint(2,str(round(left_motor_a.efficiency(PERCENT)))+"%", 37)
-        bprint(3,str(round(left_motor_b.efficiency(PERCENT)))+"%", 37)
-        bprint(4,str(round(right_motor_a.efficiency(PERCENT)))+"%", 37)
-        bprint(5,str(round(right_motor_a.efficiency(PERCENT)))+"%", 37)
-        bprint(6,str(round(shooterA.efficiency(PERCENT)))+"%", 37)
-        bprint(7,str(round(shooterB.efficiency(PERCENT)))+"%", 37)
-        bprint(8,str(round(intake.efficiency(PERCENT)))+"%", 37)   
+        left_group_eff = (left_motor_a.efficiency(PERCENT) + left_motor_b.efficiency(PERCENT))/2
+        right_group_eff = (right_motor_a.efficiency(PERCENT) + right_motor_b.efficiency(PERCENT))/2
+        bprint(2,str(round(left_group_eff))+"%", 37)
+        bprint(3,str(round(right_group_eff))+"%", 37)
+        bprint(4,str(round(shooterA.efficiency(PERCENT)))+"%", 37)
+        bprint(5,str(round(shooterB.efficiency(PERCENT)))+"%", 37)
+        bprint(6,str(round(intake.efficiency(PERCENT)))+"%", 37)   
         
         #---Distance---
-        bprint(9, str(left_distance.distance(MM))+'mm',25)
-        bprint(10,str(right_distance.distance(MM))+'mm',25)
-        bprint(11, str(front_distance.distance(MM))+'mm',25)
-        bprint(12, str(rear_distance.object_distance(MM))+'mm',25)
+        bprint(8, str(left_distance.distance(MM))+'mm',25)
+        bprint(9,str(right_distance.distance(MM))+'mm',25)
+        bprint(10, str(front_distance.distance(MM))+'mm',25)
+        bprint(11, str(rear_distance.object_distance(MM))+'mm',25)
 
 
 
