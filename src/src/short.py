@@ -61,7 +61,6 @@ def bprint(row,text,column=1):
 #shooter Shooting Function
 def disk_launch(percent, times):
     intake.set_velocity(100, PERCENT)
-    intake.spin(FORWARD)
     for i in range(times):
         shooter.set_velocity(percent,PERCENT)
         shooter.spin(FORWARD)
@@ -279,6 +278,7 @@ def driverControl():
             spinner.spin(REVERSE)
         else:
             spinner.stop()
+
 
 
 

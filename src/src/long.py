@@ -61,7 +61,6 @@ def bprint(row,text,column=1):
 #shooter Shooting Function
 def disk_launch(percent, times):
     intake.set_velocity(100, PERCENT)
-    intake.spin(FORWARD)
     for i in range(times):
         shooter.set_velocity(percent,PERCENT)
         shooter.spin(FORWARD)
@@ -120,7 +119,7 @@ def autonomous_long():
 
 def autonomous_skills():
     global spinner_for
-
+    calibrate_drivetrain()
     intake.set_velocity(100,PERCENT)
     intake.spin(FORWARD)
     #Updating Velocities
@@ -266,10 +265,10 @@ def driverControl():
             intake.set_velocity(100, PERCENT)
             intake.spin(FORWARD)
         elif controller_1.buttonR2.pressing():
-            intake.set_velocity(-100, PERCENT)
-            intake.spin(FORWARD)
+            intake.set_velocity(100,PERCENT)
+            intake.spin(REVERSE)
         else:
-            intake.set_velocity(0, PERCENT)
+            intake.stop()
 
         if controller_1.buttonLeft.pressing():
             spinner.set_velocity(100,PERCENT)
@@ -279,6 +278,7 @@ def driverControl():
             spinner.spin(REVERSE)
         else:
             spinner.stop()
+
 
 
 
@@ -418,6 +418,6 @@ def drivetrainControl():
 
 #--Competition Template--
 
-comp = Competition(driverControl, autonomous_short)
+comp = Competition(driverControl, autonomous_long)
 preAutonomous()
 
