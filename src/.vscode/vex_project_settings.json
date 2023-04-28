@@ -4,7 +4,7 @@
 		"json": 1
 	},
 	"project": {
-		"name": "Long",
+		"name": "main",
 		"description": "",
 		"creationDate": "3/12/2023, 1:37:46 PM",
 		"platform": "V5",
@@ -12,7 +12,7 @@
 		"slot": 2,
 		"sdkVersion": "V5_1_0_1_15",
 		"python": {
-			"main": "src/long.py"
+			"main": "src/main.py"
 		}
 	}
 }

@@ -32,7 +32,7 @@ front_distance = Sonar(brain.three_wire_port.e)
 left_distance = Sonar(brain.three_wire_port.c)
 right_distance = Sonar(brain.three_wire_port.a)
 
-
+drivetrain_should_stop = False
 spinner_for: int = 100
 
 def calibrate_drivetrain():
@@ -61,7 +61,6 @@ def bprint(row,text,column=1):
 #shooter Shooting Function
 def disk_launch(percent, times):
     intake.set_velocity(100, PERCENT)
-    intake.spin(FORWARD)
     for i in range(times):
         shooter.set_velocity(percent,PERCENT)
         shooter.spin(FORWARD)
@@ -72,6 +71,45 @@ def disk_launch(percent, times):
 
     shooter.stop()
     intake.stop()
+    
+#----------------PID----------------
+def pid(expected,d_velocity=100):
+    global drivetrain_should_stop
+    drivetrain_should_stop = True
+    expected = (expected + drivetrain_inertial.rotation(DEGREES))
+
+    wait(0.25, SECONDS)
+    
+    error = expected
+
+    while True:
+        actual = drivetrain_inertial.rotation(DEGREES)
+        error = (expected - actual)
+        speed = (error * 0.5)
+        left_motor_a.set_velocity(speed,PERCENT)
+        left_motor_b.set_velocity(speed,PERCENT)
+        right_motor_a.set_velocity(-speed,PERCENT)
+        right_motor_b.set_velocity(-speed,PERCENT)
+        
+        left_motor_a.spin(FORWARD)
+        left_motor_b.spin(FORWARD)
+        right_motor_a.spin(FORWARD)
+        right_motor_b.spin(FORWARD)
+        
+        cprint(2,str(error))
+
+        if abs(error) < 2:
+            break
+
+        wait(0.15,SECONDS)
+            
+    drivetrain.stop()
+    left_motor_a.set_velocity(d_velocity,PERCENT)
+    left_motor_b.set_velocity(d_velocity,PERCENT)
+    right_motor_a.set_velocity(d_velocity,PERCENT)
+    right_motor_b.set_velocity(d_velocity,PERCENT)
+    drivetrain_should_stop = False
+    cprint(2,'PID Completed')
 
 def preAutonomous():
     calibrate_drivetrain()
@@ -118,112 +156,8 @@ def autonomous_long():
     controller_1.screen.clear_screen()
       
 
-def autonomous_skills():
-    global spinner_for
 
-    intake.set_velocity(100,PERCENT)
-    intake.spin(FORWARD)
-    #Updating Velocities
-    drivetrain.set_stopping(COAST)
-    drivetrain.set_drive_velocity(60,PERCENT)
-    #Reversing into Spinner #1
-    while rear_distance.object_distance(MM) > 70: 
-        drivetrain.drive(REVERSE)
-    intake.spin_for(FORWARD,spinner_for,DEGREES)
-    drivetrain.stop()
-    #Going Forwards; preparing to pid into Spinner #2
-    while rear_distance.object_distance(MM) < 300:
-        drivetrain.drive(FORWARD)
-    drivetrain.stop()
-    #Reversing into Spinner #2
-    pid(90,70)
-    while rear_distance.object_distance(MM) > 70:
-        drivetrain.drive(REVERSE)
-    #Spinner Spinning #2
-    intake.spin_for(FORWARD,spinner_for,DEGREES)
-    drivetrain.stop()
-    wait(1,SECONDS)
-    #Going towards Middle
-    while rear_distance.object_distance(MM) < 1600:
-        drivetrain.drive(FORWARD)
-    drivetrain.stop()
-    pid(17,70)
-    disk_launch(75,3)
-    intake.spin(FORWARD)
-    pid(73,70)
-    #At Middle
-    while rear_distance.object_distance(MM) > 700 or not(rear_distance.is_object_detected()):
-        drivetrain.drive(REVERSE)
-    drivetrain.stop()
-    pid(90,70)
-    #Going to Spinner #3
-    while rear_distance.object_distance(MM) > 65: 
-        drivetrain.drive(REVERSE)
-    drivetrain.set_drive_velocity(50,PERCENT)
-    intake.spin_for(FORWARD,spinner_for,DEGREES)
-    drivetrain.stop()
-    drivetrain.set_drive_velocity(70,PERCENT)
-    #Going to Spinner #4
-    while rear_distance.object_distance(MM) < 300:
-        drivetrain.drive(FORWARD)
-    drivetrain.stop()
-    pid(-90,70)
-    while rear_distance.object_distance(MM) > 70: 
-        drivetrain.drive(REVERSE)
-    intake.spin_for(FORWARD,spinner_for,DEGREES)
-    drivetrain.stop()
-    drivetrain.drive_for(FORWARD,5,INCHES)
-    pid(45)
-    expansion.set(True)
-    wait(5,SECONDS)
-    expansion.set(False)
-    controller_1.screen.clear_screen()
-    intake.stop()
-
-#----------------PID----------------
-
-def pid(expected,d_velocity=100):
-    expected = (expected + drivetrain_inertial.rotation(DEGREES))
-
-    wait(0.25, SECONDS)
-    
-    error = expected
-
-    while True:
-        actual = drivetrain_inertial.rotation(DEGREES)
-        error = (expected - actual)
-        speed = (error * 0.5) #Re-Adjust Variable through experimentation. 
-
-        #---Velocity Updates---
-        #LeftGroup 
-        left_motor_a.set_velocity(speed,PERCENT)
-        left_motor_b.set_velocity(speed,PERCENT)
-        #RightGroup
-        right_motor_a.set_velocity(-speed,PERCENT)
-        right_motor_b.set_velocity(-speed,PERCENT)
-        
-        #---Spinning---
-        #LeftGroup Spin
-        left_motor_a.spin(FORWARD)
-        left_motor_b.spin(FORWARD)
-        #RightGroup Spin
-        right_motor_a.spin(FORWARD)
-        right_motor_b.spin(FORWARD)
-        cprint(2,str(error))
-
-        if abs(error) < 2:
-            break
-
-        wait(0.15,SECONDS)
-            
-    drivetrain.stop()
-
-    #---Resetting DriveTrain Velocity---
-    left_motor_a.set_velocity(d_velocity,PERCENT)
-    left_motor_b.set_velocity(d_velocity,PERCENT)
-    right_motor_a.set_velocity(d_velocity,PERCENT)
-    right_motor_b.set_velocity(d_velocity,PERCENT)
-    cprint(2,'PID Completed') 
+     
 
 s_velocity = 75
 
@@ -266,10 +200,10 @@ def driverControl():
             intake.set_velocity(100, PERCENT)
             intake.spin(FORWARD)
         elif controller_1.buttonR2.pressing():
-            intake.set_velocity(-100, PERCENT)
-            intake.spin(FORWARD)
+            intake.set_velocity(100,PERCENT)
+            intake.spin(REVERSE)
         else:
-            intake.set_velocity(0, PERCENT)
+            intake.stop()
 
         if controller_1.buttonLeft.pressing():
             spinner.set_velocity(100,PERCENT)
@@ -279,6 +213,10 @@ def driverControl():
             spinner.spin(REVERSE)
         else:
             spinner.stop()
+
+        if controller_1.buttonL2.pressing():
+            pid(90)
+
 
 
 
@@ -404,20 +342,24 @@ def userFeedback():
             
 def drivetrainControl():
     print("Drivetrain Control Loop Succesful")
+    global drivetrain_should_stop
     while True:
         left_speed = controller_1.axis3.position()
         right_speed = controller_1.axis2.position()
 
-        left_drive_smart.set_velocity(left_speed,PERCENT)
-        left_drive_smart.spin(FORWARD)
+        if not(drivetrain_should_stop):
+            left_drive_smart.set_velocity(left_speed,PERCENT)
+            left_drive_smart.spin(FORWARD)
 
-        right_drive_smart.set_velocity(right_speed, PERCENT)
-        right_drive_smart.spin(FORWARD)
+            right_drive_smart.set_velocity(right_speed, PERCENT)
+            right_drive_smart.spin(FORWARD)
 
 
 
+def pid_test():
+    pid(90,100)
 #--Competition Template--
 
-comp = Competition(driverControl, autonomous_short)
+comp = Competition(driverControl, pid_test)
 preAutonomous()
 
